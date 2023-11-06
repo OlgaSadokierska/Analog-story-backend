@@ -13,8 +13,10 @@ public class User {
     @Id
     @GeneratedValue
     private Long id;
-    private String username;
-    private String name;
+    private String firstname;
+    private String lastname;
     private String email;
+    private String password;
+    private Boolean isAdmin;
 
 }

@@ -40,7 +40,6 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-
         <!--Swagger-->
         <dependency>
             <groupId>org.springdoc</groupId>
