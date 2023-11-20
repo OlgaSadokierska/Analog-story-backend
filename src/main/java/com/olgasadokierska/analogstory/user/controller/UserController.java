@@ -1,27 +1,53 @@
 package com.olgasadokierska.analogstory.user.controller;
 
-import com.olgasadokierska.analogstory.user.model.User;
-import com.olgasadokierska.analogstory.user.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.olgasadokierska.analogstory.user.config.UserAuthenticationProvider;
+import com.olgasadokierska.analogstory.user.dtos.CredentialsDto;
+import com.olgasadokierska.analogstory.user.dtos.SignUpDto;
+import com.olgasadokierska.analogstory.user.dtos.UserDto;
+import com.olgasadokierska.analogstory.user.service.UserService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
-@CrossOrigin
+@RequiredArgsConstructor
 @RequestMapping("api/v1/users")
+@CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserService userService;
+    private final UserAuthenticationProvider userAuthenticationProvider;
+
     @GetMapping("")
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public ResponseEntity<List<String>> getAllUsers() {
+        return ResponseEntity.ok(Arrays.asList("cos","cos2"));
     }
 
-    @PostMapping("/create")
-    public User newUser(@RequestBody User newUser){
-        return userRepository.save(newUser);
+    @PostMapping("/login")
+    public ResponseEntity<UserDto> login(@RequestBody @Valid CredentialsDto credentialsDto) {
+        UserDto userDto = userService.login(credentialsDto);
+        userDto.setToken(userAuthenticationProvider.createToken(userDto.getLogin()));
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.set("Access-Control-Allow-Origin", "*");
+        return ResponseEntity.ok().headers(httpHeaders).body(userDto);
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<UserDto> register(@RequestBody @Valid SignUpDto user) {
+        UserDto createdUser = userService.register(user);
+        createdUser.setToken(userAuthenticationProvider.createToken(user.getLogin()));
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.set("Access-Control-Allow-Origin", "*");
+
+        return ResponseEntity.created(URI.create("/users/" + createdUser.getId())).headers(httpHeaders).body(createdUser);
     }
 
 
