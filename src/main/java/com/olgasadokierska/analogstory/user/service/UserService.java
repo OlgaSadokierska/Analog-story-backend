@@ -36,9 +36,12 @@ public class UserService {
         }
 
         User user = userMapper.signUpToUser(userDto);
+
         user.setPassword(passwordEncoder.encode(CharBuffer.wrap(userDto.getPassword().toCharArray())));
 
         User savedUser = userRepository.save(user);
+
+        System.out.println(user);
 
         return userMapper.toUserDto(savedUser);
     }

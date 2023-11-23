@@ -34,20 +34,17 @@ public class UserController {
         UserDto userDto = userService.login(credentialsDto);
         userDto.setToken(userAuthenticationProvider.createToken(userDto.getLogin()));
 
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.set("Access-Control-Allow-Origin", "*");
-        return ResponseEntity.ok().headers(httpHeaders).body(userDto);
+        return ResponseEntity.ok().body(userDto);
     }
 
     @PostMapping("/register")
     public ResponseEntity<UserDto> register(@RequestBody @Valid SignUpDto user) {
         UserDto createdUser = userService.register(user);
+        System.out.println("dupa" + user);
+
         createdUser.setToken(userAuthenticationProvider.createToken(user.getLogin()));
 
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.set("Access-Control-Allow-Origin", "*");
-
-        return ResponseEntity.created(URI.create("/users/" + createdUser.getId())).headers(httpHeaders).body(createdUser);
+        return ResponseEntity.created(URI.create("/users/" + createdUser.getId())).body(createdUser);
     }
 
 
