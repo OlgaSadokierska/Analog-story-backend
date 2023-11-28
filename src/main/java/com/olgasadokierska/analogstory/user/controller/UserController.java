@@ -7,7 +7,6 @@ import com.olgasadokierska.analogstory.user.dtos.UserDto;
 import com.olgasadokierska.analogstory.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,7 +31,7 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<UserDto> login(@RequestBody @Valid CredentialsDto credentialsDto) {
         UserDto userDto = userService.login(credentialsDto);
-        userDto.setToken(userAuthenticationProvider.createToken(userDto.getLogin()));
+        userDto.setLogin(userAuthenticationProvider.createToken(userDto.getLogin()));
 
         return ResponseEntity.ok().body(userDto);
     }
@@ -42,7 +41,7 @@ public class UserController {
         UserDto createdUser = userService.register(user);
         System.out.println("dupa" + user);
 
-        createdUser.setToken(userAuthenticationProvider.createToken(user.getLogin()));
+        createdUser.setLogin(userAuthenticationProvider.createToken(user.getLogin()));
 
         return ResponseEntity.created(URI.create("/users/" + createdUser.getId())).body(createdUser);
     }

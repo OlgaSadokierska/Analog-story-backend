@@ -13,35 +13,29 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.nio.CharBuffer;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
-
-
     private final UserMapper userMapper;
-
     private final PasswordEncoder passwordEncoder;
-    public UserDto register(SignUpDto userDto) {
-        Optional<User> optionalUser = userRepository.findByLogin(userDto.getLogin());
 
-        if (optionalUser.isPresent()) {
+    public UserDto register(SignUpDto signUpDto) {
+        String login = signUpDto.getLogin();
+        if (userRepository.existsByLogin(login)) {
             throw new AppException("Login already exists", HttpStatus.BAD_REQUEST);
         }
 
-        User user = userMapper.signUpToUser(userDto);
+        User user = userMapper.signUpToUser(signUpDto);
 
-        user.setPassword(passwordEncoder.encode(CharBuffer.wrap(userDto.getPassword().toCharArray())));
+        // Encode password
+        String encodedPassword = passwordEncoder.encode(signUpDto.getPassword());
+        user.setPassword(encodedPassword);
 
         User savedUser = userRepository.save(user);
-
-        System.out.println(user);
 
         return userMapper.toUserDto(savedUser);
     }
@@ -53,10 +47,11 @@ public class UserService {
     }
 
     public UserDto login(CredentialsDto credentialsDto) {
-        User user = userRepository.findByLogin(credentialsDto.getLogin())
+        String login = credentialsDto.getLogin();
+        User user = userRepository.findByLogin(login)
                 .orElseThrow(() -> new AppException("Unknown user", HttpStatus.NOT_FOUND));
 
-        if (passwordEncoder.matches(CharBuffer.wrap(credentialsDto.getPassword()), user.getPassword())) {
+        if (passwordEncoder.matches(credentialsDto.getPassword(), user.getPassword())) {
             return userMapper.toUserDto(user);
         }
         throw new AppException("Invalid password", HttpStatus.BAD_REQUEST);
@@ -64,9 +59,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public List<User> getAllUsers() {
-        return userRepository
-                .findAll()
-                .stream()
-                .toList();
+        return userRepository.findAll();
     }
 }
+

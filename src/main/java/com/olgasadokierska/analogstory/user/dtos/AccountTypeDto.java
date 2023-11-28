@@ -1,4 +1,5 @@
 package com.olgasadokierska.analogstory.user.dtos;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,8 +9,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CredentialsDto {
+public class AccountTypeDto {
 
-    private String login;
-    private String password;
+    private Long id;
+
+    private String name;
+
+
+
 }
+

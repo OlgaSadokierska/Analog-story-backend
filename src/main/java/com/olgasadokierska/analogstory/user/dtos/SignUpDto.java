@@ -25,9 +25,9 @@ public class SignUpDto {
     private String login;
 
     @NotEmpty
-    private Boolean isAdmin;
-
-    @NotEmpty
     private String password;
-
+    @NotEmpty
+    private String phone;
+    @NotEmpty
+    private Long accountTypeId;
 }
