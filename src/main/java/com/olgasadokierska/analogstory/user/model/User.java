@@ -2,15 +2,20 @@ package com.olgasadokierska.analogstory.user.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.List;
 
 @Entity
-@Getter
-@Setter
+@Data
+@Builder
 @Table(name = "user")
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,8 +32,6 @@ public class User {
     @JoinColumn(name = "account_type_id")
     private AccountType accountType;
 
-
-
     @PrePersist
     public void prePersist() {
         if (accountType == null) {
@@ -36,5 +39,35 @@ public class User {
             //Ustawienie domyślnego konta, na klient
             accountType = new AccountType(2L, "Domyślny");
         }
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(accountType.getName()));
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }

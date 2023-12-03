@@ -1,6 +1,5 @@
 package com.olgasadokierska.analogstory.user.controller;
 
-import com.olgasadokierska.analogstory.user.config.UserAuthenticationProvider;
 import com.olgasadokierska.analogstory.user.dtos.CredentialsDto;
 import com.olgasadokierska.analogstory.user.dtos.SignUpDto;
 import com.olgasadokierska.analogstory.user.dtos.UserDto;
@@ -21,7 +20,6 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-    private final UserAuthenticationProvider userAuthenticationProvider;
 
     @GetMapping("")
     public ResponseEntity<List<String>> getAllUsers() {
@@ -31,7 +29,7 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<UserDto> login(@RequestBody @Valid CredentialsDto credentialsDto) {
         UserDto userDto = userService.login(credentialsDto);
-        userDto.setLogin(userAuthenticationProvider.createToken(userDto.getLogin()));
+        // userDto.setLogin(userAuthenticationProvider.createToken(userDto.getLogin()));
 
         return ResponseEntity.ok().body(userDto);
     }
@@ -41,7 +39,7 @@ public class UserController {
         UserDto createdUser = userService.register(user);
         System.out.println("dupa" + user);
 
-        createdUser.setLogin(userAuthenticationProvider.createToken(user.getLogin()));
+        // createdUser.setLogin(userAuthenticationProvider.createToken(user.getLogin()));
 
         return ResponseEntity.created(URI.create("/users/" + createdUser.getId())).body(createdUser);
     }
