@@ -26,7 +26,7 @@ public class UserController {
         return ResponseEntity.ok(Arrays.asList("cos","cos2"));
     }
 
-    @PostMapping("/login")
+    /*@PostMapping("/login")
     public ResponseEntity<UserDto> login(@RequestBody @Valid CredentialsDto credentialsDto) {
         UserDto userDto = userService.login(credentialsDto);
         // userDto.setLogin(userAuthenticationProvider.createToken(userDto.getLogin()));
@@ -42,7 +42,7 @@ public class UserController {
         // createdUser.setLogin(userAuthenticationProvider.createToken(user.getLogin()));
 
         return ResponseEntity.created(URI.create("/users/" + createdUser.getId())).body(createdUser);
-    }
+    }*/
 
     @DeleteMapping("/{userId}")
     public ResponseEntity<String> deleteUser(@PathVariable Long userId) {
