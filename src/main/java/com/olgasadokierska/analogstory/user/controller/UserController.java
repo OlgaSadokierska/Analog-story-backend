@@ -1,11 +1,15 @@
 package com.olgasadokierska.analogstory.user.controller;
 
+import com.olgasadokierska.analogstory.user.dtos.CredentialsDto;
+import com.olgasadokierska.analogstory.user.dtos.SignUpDto;
 import com.olgasadokierska.analogstory.user.dtos.UserDto;
 import com.olgasadokierska.analogstory.user.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,5 +31,16 @@ public class UserController {
         UserDto user = userService.findById(id);
         return ResponseEntity.ok(user);
     }
+
+    @PostMapping("/register")
+    public ResponseEntity<UserDto> register(@RequestBody @Valid SignUpDto user) {
+        UserDto createdUser = userService.register(user);
+        System.out.println("dupa" + user);
+
+        // createdUser.setLogin(userAuthenticationProvider.createToken(user.getLogin()));
+
+        return ResponseEntity.created(URI.create("/users/" + createdUser.getId())).body(createdUser);
+    }
+
 
 }
