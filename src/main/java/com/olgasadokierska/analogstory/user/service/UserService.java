@@ -4,8 +4,11 @@ import com.olgasadokierska.analogstory.user.dtos.CredentialsDto;
 import com.olgasadokierska.analogstory.user.dtos.SignUpDto;
 import com.olgasadokierska.analogstory.user.dtos.UserDto;
 import com.olgasadokierska.analogstory.user.exception.AppException;
+import com.olgasadokierska.analogstory.user.exception.UserNotFoundException;
 import com.olgasadokierska.analogstory.user.mapper.UserMapper;
+import com.olgasadokierska.analogstory.user.model.Camera;
 import com.olgasadokierska.analogstory.user.model.User;
+import com.olgasadokierska.analogstory.user.repository.CameraRepository;
 import com.olgasadokierska.analogstory.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +26,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final CameraRepository cameraRepository;
 
     public UserDto register(SignUpDto signUpDto) {
         String login = signUpDto.getLogin();
@@ -75,5 +80,17 @@ public class UserService {
         userRepository.delete(user);
     }
 
+
+
+
+    public List<Camera> getUserCameras(Long userId) {
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            return cameraRepository.findByUser(user);
+        } else {
+            throw new UserNotFoundException("Użytkownik o ID " + userId + " nie istnieje");
+        }
+    }
 }
 

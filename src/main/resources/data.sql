@@ -10,7 +10,7 @@ VALUES
     ('Ola','Poneta','Ola@wp.pl','Ola','Ola','456789123',1),
     ('Olga','Sadokierska','Olga@wp.pl','Olga','Olga','147852369',1),
     ('Iza','Najder','iza@wp.pl','Iza','Iza','123456789',1),
-    ('Jan', 'Kowalski', 'jan.kowalski@gamil.com', 'jan.kowalski', 'Password1', '123456789', 2),
+    ('Jan', 'Kowalski', 'jan.kowalski@gamil.com', 'jan.kowalski', '$2a$10$NHFRB/kKpETgOrFoQkzdv.iX/rDi9IINx167sK.s9jVOZJOYHDDc6', '123456789', 2),
     ('Anna', 'Nowak', 'anna.nowak@gamil.com', 'anna.nowak', 'Password2', '987654321', 2),
     ('Piotr', 'Wiśniewski', 'piotr.wisniewski@gmail.com', 'piotr.wisniewski', 'Password3', '555666777', 2),
     ('Alicja', 'Dąbrowska', 'alicja.dabrowska@gmail.com', 'alicja.dabrowska', 'Password4', '999888777', 2),
