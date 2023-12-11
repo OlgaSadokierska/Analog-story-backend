@@ -32,16 +32,6 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<UserDto> register(@RequestBody @Valid SignUpDto user) {
-        UserDto createdUser = userService.register(user);
-        System.out.println("dupa" + user);
-
-        // createdUser.setLogin(userAuthenticationProvider.createToken(user.getLogin()));
-
-        return ResponseEntity.created(URI.create("/users/" + createdUser.getId())).body(createdUser);
-    }
-
     @DeleteMapping("/{userId}")
     public ResponseEntity<String> deleteUser(@PathVariable Long userId) {
         userService.deleteUser(userId);
