@@ -31,7 +31,6 @@ public class UserService {
 
         User user = userMapper.signUpToUser(signUpDto);
 
-        // Encode password
         String encodedPassword = passwordEncoder.encode(signUpDto.getPassword());
         user.setPassword(encodedPassword);
 
@@ -42,6 +41,12 @@ public class UserService {
 
     public UserDto findByLogin(String login) {
         User user = userRepository.findByLogin(login)
+                .orElseThrow(() -> new AppException("Unknown user", HttpStatus.NOT_FOUND));
+        return userMapper.toUserDto(user);
+    }
+
+    public UserDto findById(long id) {
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new AppException("Unknown user", HttpStatus.NOT_FOUND));
         return userMapper.toUserDto(user);
     }
