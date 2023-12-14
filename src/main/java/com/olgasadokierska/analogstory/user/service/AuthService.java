@@ -47,7 +47,11 @@ public class AuthService {
         );
         var user = repository.findByEmail(request.getEmail())
                 .orElseThrow();
+
+        var userId = user.getId();
+
         var jwtToken = jwtService.generateToken(user);
+
 
         return AuthenticationResponse.builder()
                 .token(jwtToken)
