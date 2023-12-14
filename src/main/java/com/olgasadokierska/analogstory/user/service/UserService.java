@@ -1,5 +1,6 @@
 package com.olgasadokierska.analogstory.user.service;
 
+import com.olgasadokierska.analogstory.user.dtos.CameraFilmDTO;
 import com.olgasadokierska.analogstory.user.dtos.CredentialsDto;
 import com.olgasadokierska.analogstory.user.dtos.SignUpDto;
 import com.olgasadokierska.analogstory.user.dtos.UserDto;
@@ -7,8 +8,10 @@ import com.olgasadokierska.analogstory.user.exception.AppException;
 import com.olgasadokierska.analogstory.user.exception.UserNotFoundException;
 import com.olgasadokierska.analogstory.user.mapper.UserMapper;
 import com.olgasadokierska.analogstory.user.model.Camera;
+import com.olgasadokierska.analogstory.user.model.Film;
 import com.olgasadokierska.analogstory.user.model.User;
 import com.olgasadokierska.analogstory.user.repository.CameraRepository;
+import com.olgasadokierska.analogstory.user.repository.FilmRepository;
 import com.olgasadokierska.analogstory.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,7 +19,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -27,6 +32,7 @@ public class UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final CameraRepository cameraRepository;
+    private final FilmRepository filmRepository;
 
     public UserDto register(SignUpDto signUpDto) {
         String login = signUpDto.getLogin();
@@ -82,7 +88,7 @@ public class UserService {
 
 
 
-
+    //wyświetlanie samego aparatu
     public List<Camera> getUserCameras(Long userId) {
         Optional<User> userOptional = userRepository.findById(userId);
         if (userOptional.isPresent()) {
@@ -92,5 +98,16 @@ public class UserService {
             throw new UserNotFoundException("Użytkownik o ID " + userId + " nie istnieje");
         }
     }
+    // wyswietlanie samych klisz
+    public List<Film> getUserFilms(Long userId) {
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            return filmRepository.findByUser(user);
+        } else {
+            throw new UserNotFoundException("Użytkownik o ID " + userId + " nie istnieje");
+        }
+    }
+
 }
 

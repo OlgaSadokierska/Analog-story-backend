@@ -110,21 +110,21 @@ INSERT INTO camera (user_id, model, brand, film_loaded, is_for_sale, product_id)
     (10,'FG4','Polaroid',false,true,15),
     (10,'TY6','Canon',true,false,16);
 -- insert Films
-INSERT INTO film (id_camera, loaded_frames, is_full, id_produktu, is_for_sale) VALUE
-   (1,25,false,17,false),
-    (16,30,true,18,true),
-    (null,0,false,19,true),
-    (null,0,false,20,true),
-    (null,0,false,21,true),
-    (null,0,false,22,true),
-    (null,0,false,23,true),
-    (null,0,false,24,true),
-    (10,30,true,25,true),
-    (4,30,true,26,false),
-    (9,15,false,27,true),
-    (11,5,false,28,false),
-    (14,12,false,29,false),
-    (3,30,true,30,true);
+INSERT INTO film (id_camera, loaded_frames, is_full, id_produktu, is_for_sale, user_id) VALUE
+   (1,25,false,17,false,4),
+    (16,30,true,18,true,10),
+    (null,0,false,19,true, null),
+    (null,0,false,20,true,null),
+    (null,0,false,21,true,null),
+    (null,0,false,22,true,null),
+    (null,0,false,23,true,null),
+    (null,0,false,24,true,null),
+    (10,30,true,25,true,7),
+    (4,30,true,26,false,5),
+    (9,15,false,27,true,6),
+    (11,5,false,28,false,8),
+    (14,12,false,29,false,10),
+    (3,30,true,30,true,5);
 -- insert reservation
 INSERT INTO reservation (user_id, product_id, reservation_date, expiration_date) values
        (18,2,'2023-11-28 12:00:00', '2023-12-05 12:00:00'),

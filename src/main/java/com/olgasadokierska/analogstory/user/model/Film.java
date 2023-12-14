@@ -3,7 +3,7 @@ package com.olgasadokierska.analogstory.user.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
+import com.olgasadokierska.analogstory.user.model.User;
 @Entity
 @Getter
 @Setter
@@ -28,6 +28,10 @@ public class Film {
     @JoinColumn(name = "id_produktu")
     private Product product;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @Column(name = "is_for_sale")
     private Boolean isForSale;
 
@@ -37,5 +41,6 @@ public class Film {
     public Long getIdCamera() {
         return idCamera;
     }
+
 
 }
