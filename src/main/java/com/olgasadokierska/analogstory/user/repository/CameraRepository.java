@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface CameraRepository extends JpaRepository<Camera, Long> {
     List<Camera> findByUser(User user);
+    List<Camera> findByIsForSale(boolean isForSale);
 }

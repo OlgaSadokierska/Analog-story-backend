@@ -22,13 +22,10 @@ public class FilmController {
         this.userService = userService;
     }
 
-
-
-
-
     @GetMapping("/films/{userId}")
     public ResponseEntity<List<Film>> getUserFilms(@PathVariable long userId) {
         List<Film> films = userService.getUserFilms(userId);
         return ResponseEntity.ok(films);
     }
+
 }

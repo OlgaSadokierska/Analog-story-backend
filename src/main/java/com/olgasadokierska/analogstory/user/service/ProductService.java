@@ -1,5 +1,9 @@
 package com.olgasadokierska.analogstory.user.service;
 
+import com.olgasadokierska.analogstory.user.model.Camera;
+import com.olgasadokierska.analogstory.user.model.Film;
+import com.olgasadokierska.analogstory.user.repository.CameraRepository;
+import com.olgasadokierska.analogstory.user.repository.FilmRepository;
 import com.olgasadokierska.analogstory.user.repository.ProductRepository;
 import com.olgasadokierska.analogstory.user.mapper.ProductMapper;
 import com.olgasadokierska.analogstory.user.dtos.ProductDto;
@@ -8,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,6 +22,8 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
+    private final CameraRepository cameraRepository;
+    private final FilmRepository filmRepository;
 
     @Transactional
     public ProductDto createProduct(ProductDto productDto) {
@@ -24,11 +31,12 @@ public class ProductService {
         Product savedProduct = productRepository.save(product);
         return productMapper.toProductDto(savedProduct);
     }
-
+    // wyswietla wszytstkich produktow
     @Transactional(readOnly = true)
     public List<ProductDto> getAllProducts() {
         return productRepository.findAll().stream()
                 .map(productMapper::toProductDto)
                 .collect(Collectors.toList());
     }
+
 }

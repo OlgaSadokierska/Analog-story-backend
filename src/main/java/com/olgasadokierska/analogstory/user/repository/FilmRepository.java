@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface FilmRepository extends JpaRepository<Film, Long> {
     List<Film> findByUser(User user);
+    List<Film> findByIsForSale(boolean isForSale);
 }
