@@ -14,15 +14,21 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/{id}")
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<String> deleteUser(@PathVariable Long userId) {
+        userService.deleteUser(userId);
+        return ResponseEntity.ok("User deleted successfully");
+    }
+
+    @GetMapping("/id/{id}")
     public ResponseEntity<UserDto> getUserById(@PathVariable long id) {
         UserDto user = userService.findById(id);
         return ResponseEntity.ok(user);
     }
 
-    @DeleteMapping("/{userId}")
-    public ResponseEntity<String> deleteUser(@PathVariable Long userId) {
-        userService.deleteUser(userId);
-        return ResponseEntity.ok("User deleted successfully");
+    @GetMapping("/by-email")
+    public ResponseEntity<Long> getUserIdByEmail(@RequestParam("email") String email) {
+        Long userId = userService.findUserIdByEmail(email);
+        return ResponseEntity.ok(userId);
     }
 }

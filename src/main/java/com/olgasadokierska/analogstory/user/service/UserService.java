@@ -52,10 +52,6 @@ public class UserService {
         return userMapper.toUserDto(user);
     }
 
-    public Optional<User> findUserByEmail(String email) {
-        return userRepository.findByEmail(email);
-    }
-
     public UserDto login(CredentialsDto credentialsDto) {
         String login = credentialsDto.getLogin();
         User user = userRepository.findByLogin(login)
@@ -78,6 +74,14 @@ public class UserService {
                 .orElseThrow(() -> new AppException("User not found", HttpStatus.NOT_FOUND));
 
         userRepository.delete(user);
+    }
+
+    @Transactional
+    public Long findUserIdByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException("User not found for email: " + email, HttpStatus.NOT_FOUND));
+
+        return user.getId();
     }
 
 }
