@@ -28,4 +28,5 @@ public class ProductController {
         ProductDto createdProduct = productService.createProduct(productDto);
         return ResponseEntity.created(URI.create("/products/" + createdProduct.getId())).body(createdProduct);
     }
+
 }

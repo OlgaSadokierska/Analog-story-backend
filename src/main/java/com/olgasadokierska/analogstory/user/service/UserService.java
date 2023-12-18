@@ -9,6 +9,7 @@ import com.olgasadokierska.analogstory.user.exception.UserNotFoundException;
 import com.olgasadokierska.analogstory.user.mapper.UserMapper;
 import com.olgasadokierska.analogstory.user.model.Camera;
 import com.olgasadokierska.analogstory.user.model.Film;
+import com.olgasadokierska.analogstory.user.model.Product;
 import com.olgasadokierska.analogstory.user.model.User;
 import com.olgasadokierska.analogstory.user.repository.CameraRepository;
 import com.olgasadokierska.analogstory.user.repository.FilmRepository;
@@ -108,7 +109,7 @@ public class UserService {
     }
 
     //wyswietlanie klisz i camer
-    public UserMediaDTO getUserMedia(Long userId) {
+   /* public UserMediaDTO getUserMedia(Long userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
@@ -123,6 +124,44 @@ public class UserService {
         } else {
             throw new UserNotFoundException("Użytkownik o ID " + userId + " nie istnieje");
         }
+    }*/
+
+
+    //wyswietlanie klisz i aparatu wraz z informacjami o produkcie
+    public UserMediaDTO getUserMedia(Long userId) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            List<Camera> kamery = cameraRepository.findByUser(user);
+            List<Film> filmy = filmRepository.findByUser(user);
+
+            // Pobierz informacje o produkcie dla każdej kamery
+            for (Camera camera : kamery) {
+                Product product = camera.getProduct();
+                // Tutaj możesz manipulować informacjami o produkcie lub przekazać je do DTO
+                if (product != null) {
+                    System.out.println("Informacje o produkcie dla kamery " + camera.getId() + ": " + product.getDescription() + ", Cena: " + product.getPrice());
+                }
+            }
+
+            // Pobierz informacje o produkcie dla każdego filmu
+            for (Film film : filmy) {
+                Product product = film.getProduct();
+                // Tutaj możesz manipulować informacjami o produkcie lub przekazać je do DTO
+                if (product != null) {
+                    System.out.println("Informacje o produkcie dla filmu " + film.getId() + ": " + product.getDescription() + ", Cena: " + product.getPrice());
+                }
+            }
+
+            UserMediaDTO userMediaDTO = new UserMediaDTO();
+            userMediaDTO.setKamery(kamery);
+            userMediaDTO.setFilmy(filmy);
+
+            return userMediaDTO;
+        } else {
+            throw new UserNotFoundException("Użytkownik o ID " + userId + " nie istnieje");
+        }
     }
+
 }
 
