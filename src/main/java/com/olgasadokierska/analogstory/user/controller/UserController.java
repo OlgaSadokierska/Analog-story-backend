@@ -2,8 +2,12 @@ package com.olgasadokierska.analogstory.user.controller;
 
 import com.olgasadokierska.analogstory.user.dtos.UserDto;
 import com.olgasadokierska.analogstory.user.dtos.UserMediaDTO;
+import com.olgasadokierska.analogstory.user.model.Reservation;
+import com.olgasadokierska.analogstory.user.service.ReservationService;
 import com.olgasadokierska.analogstory.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +21,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-
+    private final ReservationService reservationService;
     @GetMapping("")
     public ResponseEntity<List<String>> getAllUsers() {
         return ResponseEntity.ok(Arrays.asList("cos","cos2"));
@@ -40,5 +44,14 @@ public class UserController {
         UserMediaDTO userMediaDTO = userService.getUserMedia(userId);
         return ResponseEntity.ok(userMediaDTO);
     }
+    //wys. rezerwacji dla wszytskich
+
+    @GetMapping("/allReservations")
+    public ResponseEntity<List<Reservation>> getAllReservations() {
+        List<Reservation> reservations = reservationService.getAllReservations();
+        return ResponseEntity.ok(reservations);
+    }
+
+
 
 }

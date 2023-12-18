@@ -2,6 +2,7 @@ package com.olgasadokierska.analogstory.user.dtos;
 
 import com.olgasadokierska.analogstory.user.model.Camera;
 import com.olgasadokierska.analogstory.user.model.Film;
+import com.olgasadokierska.analogstory.user.model.Reservation;
 import lombok.Data;
 import lombok.Getter;
 
@@ -14,6 +15,8 @@ public class UserMediaDTO {
 
         private List<Camera> kamery;
         private List<Film> filmy;
+    @Getter
+    private List<Reservation> reservations;
 
 
     public void setKamery(List<Camera> kamery) {
@@ -23,6 +26,11 @@ public class UserMediaDTO {
     public void setFilmy(List<Film> filmy) {
             this.filmy = filmy;
         }
+
+    public void setReservations(List<Reservation> reservations) {
+        this.reservations = reservations;
     }
+    }
+
 
 

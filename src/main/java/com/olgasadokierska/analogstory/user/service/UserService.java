@@ -7,18 +7,18 @@ import com.olgasadokierska.analogstory.user.dtos.UserMediaDTO;
 import com.olgasadokierska.analogstory.user.exception.AppException;
 import com.olgasadokierska.analogstory.user.exception.UserNotFoundException;
 import com.olgasadokierska.analogstory.user.mapper.UserMapper;
-import com.olgasadokierska.analogstory.user.model.Camera;
-import com.olgasadokierska.analogstory.user.model.Film;
-import com.olgasadokierska.analogstory.user.model.Product;
-import com.olgasadokierska.analogstory.user.model.User;
+import com.olgasadokierska.analogstory.user.model.*;
 import com.olgasadokierska.analogstory.user.repository.CameraRepository;
 import com.olgasadokierska.analogstory.user.repository.FilmRepository;
 import com.olgasadokierska.analogstory.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +32,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final CameraRepository cameraRepository;
     private final FilmRepository filmRepository;
+    private final ReservationService reservationService;
 
     public UserDto register(SignUpDto signUpDto) {
         String login = signUpDto.getLogin();
@@ -161,6 +162,12 @@ public class UserService {
         } else {
             throw new UserNotFoundException("Użytkownik o ID " + userId + " nie istnieje");
         }
+    }
+    //wyswietlanie wszytskich reserwacji uzytkownika
+    @GetMapping("/{userId}/reservations")
+    public ResponseEntity<List<Reservation>> getUserReservations(@PathVariable long userId) {
+        List<Reservation> reservations = reservationService.getReservationsByUser(userId);
+        return ResponseEntity.ok(reservations);
     }
 
 }
