@@ -7,9 +7,7 @@ import com.olgasadokierska.analogstory.user.dtos.UserMediaDTO;
 import com.olgasadokierska.analogstory.user.exception.AppException;
 import com.olgasadokierska.analogstory.user.exception.UserNotFoundException;
 import com.olgasadokierska.analogstory.user.mapper.UserMapper;
-import com.olgasadokierska.analogstory.user.model.*;
-import com.olgasadokierska.analogstory.user.repository.CameraRepository;
-import com.olgasadokierska.analogstory.user.repository.FilmRepository;
+import com.olgasadokierska.analogstory.user.model.User;
 import com.olgasadokierska.analogstory.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -168,6 +166,14 @@ public class UserService {
     public ResponseEntity<List<Reservation>> getUserReservations(@PathVariable long userId) {
         List<Reservation> reservations = reservationService.getReservationsByUser(userId);
         return ResponseEntity.ok(reservations);
+    }
+
+    @Transactional
+    public Long findUserIdByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException("User not found for email: " + email, HttpStatus.NOT_FOUND));
+
+        return user.getId();
     }
 
 }
