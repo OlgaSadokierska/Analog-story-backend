@@ -18,7 +18,6 @@ public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final UserRepository userRepository;
 
-    //wyswitelanie rezerwacji dla wszytskich
     public List<Reservation> getAllReservations() {
         return reservationRepository.findAll();
     }
@@ -27,15 +26,10 @@ public class ReservationService {
         return reservationRepository.save(reservation);
     }
 
-
-    // dla zalogowanego
     public List<Reservation> getReservationsByUser(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException("Użytkownik nie znaleziony", HttpStatus.NOT_FOUND));
         return reservationRepository.findByUser(user);
     }
 
-
-
 }
-

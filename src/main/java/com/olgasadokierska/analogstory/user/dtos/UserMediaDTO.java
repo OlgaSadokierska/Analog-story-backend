@@ -12,19 +12,18 @@ import java.util.List;
 @Data
 public class UserMediaDTO {
 
+    private List<Camera> cameras;
+    private List<Film> films;
 
-        private List<Camera> kamery;
-        private List<Film> filmy;
     @Getter
     private List<Reservation> reservations;
 
-
-    public void setKamery(List<Camera> kamery) {
-            this.kamery = kamery;
+    public void setKamery(List<Camera> films) {
+            this.cameras = cameras;
         }
 
-    public void setFilmy(List<Film> filmy) {
-            this.filmy = filmy;
+    public void setFilmy(List<Film> films) {
+            this.films = films;
         }
 
     public void setReservations(List<Reservation> reservations) {
