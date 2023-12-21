@@ -56,4 +56,10 @@ public class ReservationController {
         }
     }
 
+    @GetMapping("/{userId}/reservations")
+    public ResponseEntity<List<Reservation>> getUserReservations(@PathVariable long userId) {
+        List<Reservation> reservations = reservationService.getReservationsByUser(userId);
+        return ResponseEntity.ok(reservations);
+    }
+
 }

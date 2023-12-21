@@ -32,7 +32,6 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final CameraRepository cameraRepository;
     private final FilmRepository filmRepository;
-    private final ReservationService reservationService;
 
     public UserDto register(SignUpDto signUpDto) {
         String login = signUpDto.getLogin();
@@ -86,8 +85,6 @@ public class UserService {
         userRepository.delete(user);
     }
 
-
-
     //wyświetlanie samego aparatu
     public List<Camera> getUserCameras(Long userId) {
         Optional<User> userOptional = userRepository.findById(userId);
@@ -98,6 +95,7 @@ public class UserService {
             throw new UserNotFoundException("Użytkownik o ID " + userId + " nie istnieje");
         }
     }
+
     // wyswietlanie samych klisz
     public List<Film> getUserFilms(Long userId) {
         Optional<User> userOptional = userRepository.findById(userId);
@@ -109,25 +107,6 @@ public class UserService {
         }
     }
 
-    //wyswietlanie klisz i camer
-   /* public UserMediaDTO getUserMedia(Long userId) {
-        Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            List<Camera> kamery = cameraRepository.findByUser(user);
-            List<Film> filmy = filmRepository.findByUser(user);
-
-            UserMediaDTO userMediaDTO = new UserMediaDTO();
-            userMediaDTO.setKamery(kamery);
-            userMediaDTO.setFilmy(filmy);
-
-            return userMediaDTO;
-        } else {
-            throw new UserNotFoundException("Użytkownik o ID " + userId + " nie istnieje");
-        }
-    }*/
-
-
     //wyswietlanie klisz i aparatu wraz z informacjami o produkcie
     public UserMediaDTO getUserMedia(Long userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
@@ -136,19 +115,16 @@ public class UserService {
             List<Camera> kamery = cameraRepository.findByUser(user);
             List<Film> filmy = filmRepository.findByUser(user);
 
-            // Pobierz informacje o produkcie dla każdej kamery
             for (Camera camera : kamery) {
                 Product product = camera.getProduct();
-                // Tutaj możesz manipulować informacjami o produkcie lub przekazać je do DTO
                 if (product != null) {
                     System.out.println("Informacje o produkcie dla kamery " + camera.getId() + ": " + product.getDescription() + ", Cena: " + product.getPrice());
                 }
             }
 
-            // Pobierz informacje o produkcie dla każdego filmu
             for (Film film : filmy) {
                 Product product = film.getProduct();
-                // Tutaj możesz manipulować informacjami o produkcie lub przekazać je do DTO
+
                 if (product != null) {
                     System.out.println("Informacje o produkcie dla filmu " + film.getId() + ": " + product.getDescription() + ", Cena: " + product.getPrice());
                 }
@@ -163,20 +139,35 @@ public class UserService {
             throw new UserNotFoundException("Użytkownik o ID " + userId + " nie istnieje");
         }
     }
-    //wyswietlanie wszytskich reserwacji uzytkownika
-    @GetMapping("/{userId}/reservations")
-    public ResponseEntity<List<Reservation>> getUserReservations(@PathVariable long userId) {
-        List<Reservation> reservations = reservationService.getReservationsByUser(userId);
-        return ResponseEntity.ok(reservations);
-    }
 
     @Transactional
     public Long findUserIdByEmail(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new AppException("User not found for email: " + email, HttpStatus.NOT_FOUND));
-
         return user.getId();
     }
+
+    @Transactional
+    public UserDto updateUser(Long userId, SignUpDto signUpDto) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found", new Throwable()));
+
+        user.setFirstName(signUpDto.getFirstName());
+        user.setLastName(signUpDto.getLastName());
+        user.setEmail(signUpDto.getEmail());
+        user.setLogin(signUpDto.getLogin());
+        user.setPhone(signUpDto.getPhone());
+
+        if (signUpDto.getPassword() != null) {
+            String encodedPassword = passwordEncoder.encode(signUpDto.getPassword());
+            user.setPassword(encodedPassword);
+        }
+
+        User updatedUser = userRepository.save(user);
+
+        return userMapper.toUserDto(updatedUser);
+    }
+
 
 }
 

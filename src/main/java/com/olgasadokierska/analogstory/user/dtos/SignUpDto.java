@@ -26,8 +26,10 @@ public class SignUpDto {
 
     @NotEmpty
     private String password;
+
     @NotEmpty
     private String phone;
+
     @NotEmpty
     private Long accountTypeId;
 }

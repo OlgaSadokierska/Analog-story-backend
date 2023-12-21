@@ -31,7 +31,7 @@ public class ProductService {
         Product savedProduct = productRepository.save(product);
         return productMapper.toProductDto(savedProduct);
     }
-    // wyswietla wszytstkich produktow
+
     @Transactional(readOnly = true)
     public List<ProductDto> getAllProducts() {
         return productRepository.findAll().stream()

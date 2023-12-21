@@ -36,7 +36,6 @@ public class User implements UserDetails {
     public void prePersist() {
         if (accountType == null) {
 
-            //Ustawienie domyślnego konta, na klient
             accountType = new AccountType(2L, "Domyślny");
         }
     }

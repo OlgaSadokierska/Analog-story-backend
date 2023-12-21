@@ -28,6 +28,8 @@ public class AuthService {
                 .firstName(request.getFirstname())
                 .lastName(request.getLastname())
                 .email(request.getEmail())
+                .login(request.getLogin())
+                .phone(request.getPhone())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .build();
         var savedUser = repository.save(user);
