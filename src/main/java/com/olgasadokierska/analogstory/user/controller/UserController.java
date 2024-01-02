@@ -29,8 +29,8 @@ public class UserController {
     }
 
     @GetMapping("/by-email")
-    public ResponseEntity<Long> getUserIdByEmail(@RequestParam("email") String email) {
-        Long userId = userService.findUserIdByEmail(email);
+    public ResponseEntity<Integer[]> getUserIdByEmail(@RequestParam("email") String email) {
+        Integer[] userId = userService.findUserDataByEmail(email);
         return ResponseEntity.ok(userId);
     }
 
