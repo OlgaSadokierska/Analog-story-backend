@@ -141,10 +141,12 @@ public class UserService {
     }
 
     @Transactional
-    public Long findUserIdByEmail(String email) {
+    public Integer[] findUserDataByEmail(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new AppException("User not found for email: " + email, HttpStatus.NOT_FOUND));
-        return user.getId();
+
+        Integer[] userData = {Integer.parseInt(user.getId().toString()), Integer.parseInt(user.getAccountType().getId().toString())};
+        return userData;
     }
 
     @Transactional
