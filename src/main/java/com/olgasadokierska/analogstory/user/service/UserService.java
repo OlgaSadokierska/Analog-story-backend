@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -108,6 +109,7 @@ public class UserService {
     }
 
     //wyswietlanie klisz i aparatu wraz z informacjami o produkcie
+
     public UserMediaDTO getUserMedia(Long userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isPresent()) {
@@ -131,8 +133,8 @@ public class UserService {
             }
 
             UserMediaDTO userMediaDTO = new UserMediaDTO();
-            userMediaDTO.setKamery(kamery);
-            userMediaDTO.setFilmy(filmy);
+            userMediaDTO.setCameras(kamery);
+            userMediaDTO.setFilms(filmy);
 
             return userMediaDTO;
         } else {
