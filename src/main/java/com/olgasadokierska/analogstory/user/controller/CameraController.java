@@ -1,5 +1,6 @@
 package com.olgasadokierska.analogstory.user.controller;
 
+import com.olgasadokierska.analogstory.user.dtos.UserMediaDTO;
 import com.olgasadokierska.analogstory.user.exception.CustomException;
 import com.olgasadokierska.analogstory.user.model.Camera;
 import com.olgasadokierska.analogstory.user.model.User;
@@ -26,7 +27,12 @@ public class CameraController {
         List<Camera> cameras = userService.getUserCameras(userId);
         return ResponseEntity.ok(cameras);
     }
-
+    @GetMapping("/user/{userId}/media")
+    public ResponseEntity<UserMediaDTO> getUserMedia(@PathVariable long userId) {
+        UserMediaDTO userMediaDTO = userService.getUserMedia(userId);
+        return ResponseEntity.ok(userMediaDTO);
+    }
+    
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<String> handleCustomException(CustomException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
