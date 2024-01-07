@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/users")
@@ -32,6 +34,18 @@ public class UserController {
     public ResponseEntity<Integer[]> getUserIdByEmail(@RequestParam("email") String email) {
         Integer[] userId = userService.findUserDataByEmail(email);
         return ResponseEntity.ok(userId);
+    }
+
+    @GetMapping("/employees")
+    public ResponseEntity<List<UserDto>> getAllEmployees() {
+        List<UserDto> employees = userService.findAllEmployees();
+        return ResponseEntity.ok(employees);
+    }
+
+    @GetMapping("/users")
+    public ResponseEntity<List<UserDto>> getAllUsers() {
+        List<UserDto> employees = userService.findAllUsers();
+        return ResponseEntity.ok(employees);
     }
 
    @GetMapping("/{userId}/media")
