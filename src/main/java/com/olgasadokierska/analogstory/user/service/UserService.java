@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -170,6 +171,17 @@ public class UserService {
         return userMapper.toUserDto(updatedUser);
     }
 
+    public List<UserDto> findAllEmployees() {
+        List<User> employees = userRepository.findAllEmployees();
+
+        return userMapper.toUserDtoList(employees);
+    }
+
+    public List<UserDto> findAllUsers() {
+        List<User> employees = userRepository.findAllUsers();
+
+        return userMapper.toUserDtoList(employees);
+    }
 
 }
 
