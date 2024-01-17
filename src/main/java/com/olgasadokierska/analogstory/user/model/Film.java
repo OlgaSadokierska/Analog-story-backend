@@ -32,8 +32,10 @@ public class Film {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Getter
     @Column(name = "is_for_sale")
     private Boolean isForSale;
+
 
     public void setIdCamera(Long idCamera) {
         this.idCamera = idCamera;
@@ -42,5 +44,8 @@ public class Film {
         return idCamera;
     }
 
+    public Boolean getIsForSale() {
+        return isForSale;
+    }
 
 }
