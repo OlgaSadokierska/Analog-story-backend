@@ -1,11 +1,9 @@
 package com.olgasadokierska.analogstory.user.service;
 
-import com.olgasadokierska.analogstory.user.dtos.CredentialsDto;
-import com.olgasadokierska.analogstory.user.dtos.SignUpDto;
-import com.olgasadokierska.analogstory.user.dtos.UserDto;
-import com.olgasadokierska.analogstory.user.dtos.UserMediaDTO;
+import com.olgasadokierska.analogstory.user.dtos.*;
 import com.olgasadokierska.analogstory.user.exception.AppException;
 import com.olgasadokierska.analogstory.user.exception.UserNotFoundException;
+import com.olgasadokierska.analogstory.user.mapper.CameraMapper;
 import com.olgasadokierska.analogstory.user.mapper.UserMapper;
 import com.olgasadokierska.analogstory.user.model.*;
 import com.olgasadokierska.analogstory.user.repository.CameraRepository;
@@ -16,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.olgasadokierska.analogstory.user.mapper.CartMapper;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +28,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final CameraRepository cameraRepository;
     private final FilmRepository filmRepository;
+
 
     public UserDto register(SignUpDto signUpDto) {
         String login = signUpDto.getLogin();
@@ -56,6 +57,8 @@ public class UserService {
                 .orElseThrow(() -> new AppException("Unknown user", HttpStatus.NOT_FOUND));
         return userMapper.toUserDto(user);
     }
+
+
 
     public UserDto login(CredentialsDto credentialsDto) {
         String login = credentialsDto.getLogin();
@@ -117,6 +120,7 @@ public class UserService {
     }
 
     //wyswietlanie klisz i aparatu wraz z informacjami o produkcie
+
     public UserMediaDTO getUserMedia(Long userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isPresent()) {
@@ -140,8 +144,8 @@ public class UserService {
             }
 
             UserMediaDTO userMediaDTO = new UserMediaDTO();
-            userMediaDTO.setKamery(kamery);
-            userMediaDTO.setFilmy(filmy);
+            userMediaDTO.setCameras(kamery);
+            userMediaDTO.setFilms(filmy);
 
             return userMediaDTO;
         } else {
@@ -179,6 +183,7 @@ public class UserService {
         return userMapper.toUserDto(updatedUser);
     }
 
+
     public List<UserDto> findAllEmployees() {
         List<User> employees = userRepository.findAllEmployees();
 
@@ -191,5 +196,8 @@ public class UserService {
         return userMapper.toUserDtoList(employees);
     }
 
+
+
 }
+
 

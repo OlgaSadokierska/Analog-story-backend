@@ -10,6 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Data
 public class Camera {
 
     @Id
@@ -27,10 +28,18 @@ public class Camera {
     @Column(name = "film_loaded")
     private Boolean filmLoaded;
 
+    @Getter
     @Column(name = "is_for_sale")
     private Boolean isForSale;
+
 
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
+
+    public Boolean getIsForSale() {
+        return isForSale;
+    }
+
+
 }
