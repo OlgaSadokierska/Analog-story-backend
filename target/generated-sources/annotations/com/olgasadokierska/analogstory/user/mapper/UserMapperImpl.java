@@ -5,12 +5,14 @@ import com.olgasadokierska.analogstory.user.dtos.UserDto;
 import com.olgasadokierska.analogstory.user.dtos.UserDto.UserDtoBuilder;
 import com.olgasadokierska.analogstory.user.model.User;
 import com.olgasadokierska.analogstory.user.model.User.UserBuilder;
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-12-19T20:43:22+0100",
+    date = "2024-01-07T21:59:21+0100",
     comments = "version: 1.4.2.Final, compiler: javac, environment: Java 18.0.1.1 (Oracle Corporation)"
 )
 @Component
@@ -33,6 +35,20 @@ public class UserMapperImpl implements UserMapper {
         userDto.phone( user.getPhone() );
 
         return userDto.build();
+    }
+
+    @Override
+    public List<UserDto> toUserDtoList(List<User> users) {
+        if ( users == null ) {
+            return null;
+        }
+
+        List<UserDto> list = new ArrayList<UserDto>( users.size() );
+        for ( User user : users ) {
+            list.add( toUserDto( user ) );
+        }
+
+        return list;
     }
 
     @Override
