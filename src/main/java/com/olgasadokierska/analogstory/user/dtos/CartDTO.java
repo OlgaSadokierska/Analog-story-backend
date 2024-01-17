@@ -12,5 +12,5 @@ public class CartDTO {
     private Long userId;
     private Long productId;
     private Boolean isPurchased;
-    private String productInfo;
+
 }

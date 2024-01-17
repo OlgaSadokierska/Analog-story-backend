@@ -47,7 +47,13 @@ public class CartService {
 
     private CartDTO mapCartToCartDTOWithProductInfo(Cart cart) {
         CartDTO cartDTO = cartMapper.cartToCartDTO(cart);
-        cartDTO.setProductInfo(productService.getProductInfoById(cart.getProduct().getId()));
+
+
+        if (cart.getProduct() != null) {
+
+
+        }
+
         return cartDTO;
     }
 
