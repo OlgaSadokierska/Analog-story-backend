@@ -34,6 +34,7 @@ public class SecurityConfig {
             "/swagger-ui/**",
             "/webjars/**",
             "/swagger-ui.html",
+            "/api/v1/users/addEmployee",
     "/logout"};
 
     private final JwtAuthFilter jwtAuthFilter;

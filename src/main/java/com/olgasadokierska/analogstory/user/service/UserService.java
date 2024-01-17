@@ -81,6 +81,19 @@ public class UserService {
         userRepository.delete(user);
     }
 
+    @Transactional
+    public UserDto addEmployee(SignUpDto signUpDto) {
+        User employee = userMapper.signUpToUser(signUpDto);
+        employee.setAccountType(new AccountType(3L, "employee"));
+
+        String encodedPassword = passwordEncoder.encode(signUpDto.getPassword());
+        employee.setPassword(encodedPassword);
+
+        User savedEmployee = userRepository.save(employee);
+
+        return userMapper.toUserDto(savedEmployee);
+    }
+
     //wyświetlanie samego aparatu
     public List<Camera> getUserCameras(Long userId) {
         Optional<User> userOptional = userRepository.findById(userId);
