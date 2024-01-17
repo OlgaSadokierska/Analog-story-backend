@@ -41,8 +41,6 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
-    //
-
     public String getProductInfoById(Long productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new AppException("Produkt o ID " + productId + " nie istnieje", HttpStatus.NOT_FOUND));
@@ -58,6 +56,24 @@ public class ProductService {
 
         return productMapper.toProductDto(product);
 
+    }
+//
+    @Transactional
+    public ProductDto updateProduct(Long productId, ProductDto updatedProductDto) {
+        Product existingProduct = productRepository.findById(productId)
+                .orElseThrow(() -> new AppException("Product with ID " + productId + " not found", HttpStatus.NOT_FOUND));
+
+        // Update properties of the existing product with new values
+        existingProduct.setDescription(updatedProductDto.getDescription());
+        existingProduct.setPrice(updatedProductDto.getPrice());
+
+        // You may also update other properties based on your requirements
+
+        // Save the updated product to the database
+        Product updatedProduct = productRepository.save(existingProduct);
+
+        // Map and return the updated product DTO
+        return productMapper.toProductDto(updatedProduct);
     }
 }
 

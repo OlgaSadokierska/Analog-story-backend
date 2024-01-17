@@ -28,7 +28,12 @@ public class ProductController {
         ProductDto createdProduct = productService.createProduct(productDto);
         return ResponseEntity.created(URI.create("/products/" + createdProduct.getId())).body(createdProduct);
     }
-
+//
+    @PutMapping("/{productId}")
+    public ResponseEntity<ProductDto> updateProduct(@PathVariable Long productId, @RequestBody ProductDto updatedProductDto) {
+        ProductDto updatedProduct = productService.updateProduct(productId, updatedProductDto);
+        return ResponseEntity.ok(updatedProduct);
+    }
 
 
 }
