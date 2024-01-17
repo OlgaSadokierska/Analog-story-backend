@@ -50,4 +50,14 @@ public class ProductService {
 
         return "Opis: " + product.getDescription() + ", Cena: " + product.getPrice();
     }
+    @Transactional(readOnly = true)
+    public ProductDto getProductDtoById(Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new AppException("Product with ID " + productId + " not found", HttpStatus.NOT_FOUND));
+
+
+        return productMapper.toProductDto(product);
+
+    }
 }
+

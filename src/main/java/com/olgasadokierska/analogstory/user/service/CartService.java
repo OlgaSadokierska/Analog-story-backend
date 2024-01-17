@@ -2,6 +2,7 @@ package com.olgasadokierska.analogstory.user.service;
 
 
 import com.olgasadokierska.analogstory.user.dtos.CartDTO;
+import com.olgasadokierska.analogstory.user.dtos.ProductDto;
 import com.olgasadokierska.analogstory.user.exception.AppException;
 import com.olgasadokierska.analogstory.user.mapper.CartMapper;
 import com.olgasadokierska.analogstory.user.model.Cart;
@@ -31,6 +32,7 @@ public class CartService {
                 .collect(Collectors.toList());
     }
 
+
     @Transactional(readOnly = true)
     public List<CartDTO> getAllCartsWithProductInfo() {
         return cartRepository.findAll().stream()
@@ -45,17 +47,19 @@ public class CartService {
         return cartMapper.cartToCartDTO(createdCart);
     }
 
+
+
     private CartDTO mapCartToCartDTOWithProductInfo(Cart cart) {
         CartDTO cartDTO = cartMapper.cartToCartDTO(cart);
 
-
         if (cart.getProduct() != null) {
-
-
+            ProductDto productDto = productService.getProductDtoById(cart.getProduct().getId());
+            cartDTO.setProductDto(productDto);
         }
 
         return cartDTO;
     }
+
 
 
 }
