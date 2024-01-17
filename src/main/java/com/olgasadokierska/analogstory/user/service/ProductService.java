@@ -1,5 +1,6 @@
 package com.olgasadokierska.analogstory.user.service;
 
+import com.olgasadokierska.analogstory.user.exception.AppException;
 import com.olgasadokierska.analogstory.user.model.Camera;
 import com.olgasadokierska.analogstory.user.model.Film;
 import com.olgasadokierska.analogstory.user.repository.CameraRepository;
@@ -9,6 +10,7 @@ import com.olgasadokierska.analogstory.user.mapper.ProductMapper;
 import com.olgasadokierska.analogstory.user.dtos.ProductDto;
 import com.olgasadokierska.analogstory.user.model.Product;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,4 +41,13 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
+    //
+
+    public String getProductInfoById(Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new AppException("Produkt o ID " + productId + " nie istnieje", HttpStatus.NOT_FOUND));
+
+
+        return "Opis: " + product.getDescription() + ", Cena: " + product.getPrice();
+    }
 }

@@ -1,11 +1,9 @@
 package com.olgasadokierska.analogstory.user.service;
 
-import com.olgasadokierska.analogstory.user.dtos.CredentialsDto;
-import com.olgasadokierska.analogstory.user.dtos.SignUpDto;
-import com.olgasadokierska.analogstory.user.dtos.UserDto;
-import com.olgasadokierska.analogstory.user.dtos.UserMediaDTO;
+import com.olgasadokierska.analogstory.user.dtos.*;
 import com.olgasadokierska.analogstory.user.exception.AppException;
 import com.olgasadokierska.analogstory.user.exception.UserNotFoundException;
+import com.olgasadokierska.analogstory.user.mapper.CameraMapper;
 import com.olgasadokierska.analogstory.user.mapper.UserMapper;
 import com.olgasadokierska.analogstory.user.model.*;
 import com.olgasadokierska.analogstory.user.repository.CameraRepository;
@@ -13,14 +11,11 @@ import com.olgasadokierska.analogstory.user.repository.FilmRepository;
 import com.olgasadokierska.analogstory.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import com.olgasadokierska.analogstory.user.mapper.CartMapper;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,6 +28,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final CameraRepository cameraRepository;
     private final FilmRepository filmRepository;
+
 
     public UserDto register(SignUpDto signUpDto) {
         String login = signUpDto.getLogin();
@@ -61,6 +57,8 @@ public class UserService {
                 .orElseThrow(() -> new AppException("Unknown user", HttpStatus.NOT_FOUND));
         return userMapper.toUserDto(user);
     }
+
+
 
     public UserDto login(CredentialsDto credentialsDto) {
         String login = credentialsDto.getLogin();
@@ -173,5 +171,9 @@ public class UserService {
     }
 
 
+
+
+
 }
+
 
