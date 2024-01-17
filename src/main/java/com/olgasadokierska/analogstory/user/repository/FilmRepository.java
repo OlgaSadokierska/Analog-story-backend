@@ -19,5 +19,6 @@ public interface FilmRepository extends JpaRepository<Film, Long> {
     default List<Film> findByIsForSale(boolean isForSale) {
         return null;
     }
+    void deleteByProductId(Long productId);
 
 }

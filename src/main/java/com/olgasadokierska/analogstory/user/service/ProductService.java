@@ -6,6 +6,7 @@ import com.olgasadokierska.analogstory.user.exception.ProductNotFoundException;
 import com.olgasadokierska.analogstory.user.model.Camera;
 import com.olgasadokierska.analogstory.user.model.Film;
 import com.olgasadokierska.analogstory.user.repository.CameraRepository;
+import com.olgasadokierska.analogstory.user.repository.CartRepository;
 import com.olgasadokierska.analogstory.user.repository.FilmRepository;
 import com.olgasadokierska.analogstory.user.repository.ProductRepository;
 import com.olgasadokierska.analogstory.user.mapper.ProductMapper;
@@ -29,6 +30,7 @@ public class ProductService {
     private final ProductMapper productMapper;
     private final CameraRepository cameraRepository;
     private final FilmRepository filmRepository;
+    private final CartRepository cartRepository;
 
     @Transactional
     public ProductDto createProduct(ProductDto productDto) {
@@ -62,7 +64,9 @@ public class ProductService {
 
                     // Sprawdzenie, czy produkt nie ma powiązań z Camera, gdzie isForSale jest ustawione na false
                     // oraz nie ma powiązań z Film, gdzie isForSale jest ustawione na false
-                    return isCameraForSale && isFilmForSale;
+                    boolean isProductInCart = cartRepository.existsByProductId(product.getId());
+
+                    return isCameraForSale && isFilmForSale && !isProductInCart;
                 })
                 .map(product -> {
                     ProductDto productDto = productMapper.toProductDto(product);
@@ -77,14 +81,6 @@ public class ProductService {
                 })
                 .collect(Collectors.toList());
     }
-
-
-
-
-
-
-
-
 
 
     public String getProductInfoById(Long productId) {
@@ -117,29 +113,36 @@ public class ProductService {
         return productMapper.toProductDto(updatedProduct);
     }
     // usuwanie wybrango produktu
-    /*@Transactional
-    public void deleteProduct(Long productId) throws ProductNotFoundException {
+    @Transactional
+    public void deleteProduct(Long productId) throws ProductNotFoundException, CannotDeleteProductException {
         Optional<Product> productOptional = productRepository.findById(productId);
 
         if (productOptional.isPresent()) {
             Product product = productOptional.get();
 
-            // Sprawdzenie czy istnieją powiązania z Camera lub Film
-            boolean hasAssociations = cameraRepository.existsByProductId(productId)
-                    || filmRepository.existsByProductId(productId);
+            // Sprawdzenie, czy Camera ma isForSale ustawione na true
+            cameraRepository.findByProductId(productId).ifPresent(camera -> {
+                if (!camera.getIsForSale()) {
+                    throw new CannotDeleteProductException("Nie można usunąć produktu, ponieważ powiązana kamera nie jest na sprzedaż.");
+                }
+            });
 
-            // Sprawdzenie czy pole isForSale jest ustawione na true
-            boolean isForSale = false;
+            // Sprawdzenie, czy Film ma isForSale ustawione na true
+            filmRepository.findByProductId(productId).ifPresent(film -> {
+                if (!film.getIsForSale()) {
+                    throw new CannotDeleteProductException("Nie można usunąć produktu, ponieważ powiązany film nie jest na sprzedaż.");
+                }
+            });
 
-            // Sprawdzenie warunków usuwania
-            if (!hasAssociations && !isForSale) {
-                productRepository.delete(product);
-            } else {
-                throw new CannotDeleteProductException("Cannot delete product with associations or isForSale set to true.");
-            }
+            // Usuwanie związanych rekordów z tabel Camera i Film
+            cameraRepository.deleteByProductId(productId);
+            filmRepository.deleteByProductId(productId);
+
+            // Usuwanie produktu
+            productRepository.delete(product);
         } else {
-            throw new ProductNotFoundException("Product not found with id: " + productId);
+            throw new ProductNotFoundException("Produkt o ID " + productId + " nie został znaleziony");
         }
-    }*/
+    }
 }
 

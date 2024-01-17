@@ -1,8 +1,11 @@
 package com.olgasadokierska.analogstory.user.controller;
 
 import com.olgasadokierska.analogstory.user.dtos.ProductDto;
+import com.olgasadokierska.analogstory.user.exception.CannotDeleteProductException;
+import com.olgasadokierska.analogstory.user.exception.ProductNotFoundException;
 import com.olgasadokierska.analogstory.user.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,4 +44,13 @@ public class ProductController {
     return ResponseEntity.noContent().build();
     }
 */
+@DeleteMapping("/{productId}")
+public ResponseEntity<String> deleteProduct(@PathVariable Long productId) {
+    try {
+        productService.deleteProduct(productId);
+        return ResponseEntity.noContent().build();
+    } catch (ProductNotFoundException | CannotDeleteProductException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+}
 }
