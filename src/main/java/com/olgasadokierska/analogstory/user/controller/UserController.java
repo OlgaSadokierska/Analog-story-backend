@@ -62,4 +62,10 @@ public class UserController {
         UserDto updatedUser = userService.updateUser(userId, signUpDto);
         return ResponseEntity.ok(updatedUser);
     }
+
+    @PostMapping("/addEmployee")
+    public ResponseEntity<UserDto> addEmployee(@RequestBody SignUpDto signUpDto) {
+        UserDto newEmployee = userService.addEmployee(signUpDto);
+        return ResponseEntity.ok(newEmployee);
+    }
 }
