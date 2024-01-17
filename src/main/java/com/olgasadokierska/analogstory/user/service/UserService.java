@@ -171,6 +171,17 @@ public class UserService {
     }
 
 
+    public List<UserDto> findAllEmployees() {
+        List<User> employees = userRepository.findAllEmployees();
+
+        return userMapper.toUserDtoList(employees);
+    }
+
+    public List<UserDto> findAllUsers() {
+        List<User> employees = userRepository.findAllUsers();
+
+        return userMapper.toUserDtoList(employees);
+    }
 
 
 

@@ -60,6 +60,12 @@ public class CartService {
         return cartDTO;
     }
 
+    @Transactional(readOnly = true)
+    public List<CartDTO> getUnacceptedCarts() {
+        return cartRepository.findByIsPurchasedFalse().stream()
+                .map(this::mapCartToCartDTOWithProductInfo)
+                .collect(Collectors.toList());
+    }
 
 
 }

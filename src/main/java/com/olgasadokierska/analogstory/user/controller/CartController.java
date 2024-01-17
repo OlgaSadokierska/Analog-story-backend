@@ -1,7 +1,9 @@
 package com.olgasadokierska.analogstory.user.controller;
 
 import com.olgasadokierska.analogstory.user.dtos.CartDTO;
+import com.olgasadokierska.analogstory.user.repository.CartRepository;
 import com.olgasadokierska.analogstory.user.service.CartService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,4 +24,9 @@ public class CartController {
         return ResponseEntity.ok(carts);
     }
 
+    @GetMapping("/unaccepted")
+    public ResponseEntity<List<CartDTO>> getUnacceptedCarts() {
+        List<CartDTO> unacceptedCarts = cartService.getUnacceptedCarts();
+        return ResponseEntity.ok(unacceptedCarts);
+    }
 }
