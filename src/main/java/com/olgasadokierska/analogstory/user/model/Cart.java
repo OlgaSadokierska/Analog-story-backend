@@ -1,5 +1,6 @@
 package com.olgasadokierska.analogstory.user.model;
 import jakarta.persistence.*;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,6 +8,7 @@ import lombok.Setter;
 @Table(name = "cart")
 @Getter
 @Setter
+
 public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
