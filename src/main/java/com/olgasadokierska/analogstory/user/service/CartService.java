@@ -46,34 +46,6 @@ public class CartService {
                 .collect(Collectors.toList());
     }
 
-    /*@Transactional
-    public CartDTO createCart(CartDTO cartDTO) {
-        // Sprawdzamy, czy produkt o podanym ID istnieje
-        ProductDto productDto = productService.getProductDtoById(cartDTO.getProductId());
-        if (productDto == null) {
-            throw new AppException("Product with ID " + cartDTO.getProductId() + " not found", HttpStatus.NOT_FOUND);
-        }
-
-        Cart cart = cartMapper.cartDTOToCart(cartDTO);
-        Cart createdCart = cartRepository.save(cart);
-        return cartMapper.cartToCartDTO(createdCart);
-    }*/
-
-
-
-
-
-    /*@Transactional
-    public CartDTO createCart(CartDTO cartDTO) {
-        Cart cart = cartMapper.cartDTOToCart(cartDTO);
-        Cart createdCart = cartRepository.save(cart);
-        return cartMapper.cartToCartDTO(createdCart);
-    }*/
-
-
-
-
-
     private CartDTO mapCartToCartDTOWithProductInfo(Cart cart) {
         CartDTO cartDTO = cartMapper.cartToCartDTO(cart);
 
@@ -146,5 +118,31 @@ public class CartService {
 
         System.out.println("Dodano produkt o ID " + productId + " do koszyka użytkownika o ID " + userId);
     }
+// akceptowanie koszyka
+    @Transactional
+    public void markCartAsPurchased(Long cartId) {
+        // Retrieve the cart based on the ID
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(() -> new AppException("Cart not found", HttpStatus.NOT_FOUND));
 
+        // Mark the cart as purchased
+        cart.setIsPurchased(true);
+
+        // Save the changes to the database
+        cartRepository.save(cart);
+    }
+    //wświetlanie wszytstkich koszyków zakceptowanych
+    @Transactional(readOnly = true)
+    public List<CartDTO> getAcceptedCarts() {
+        return cartRepository.findByIsPurchasedTrue().stream()
+                .map(this::mapCartToCartDTOWithProductInfo)
+                .collect(Collectors.toList());
+    }
+    //wyswietanie zakceptowanego koszyka dla zalogonwego uzytkownika
+    @Transactional(readOnly = true)
+    public List<CartDTO> getAcceptedCartsForUser(Long userId) {
+        return cartRepository.findByUserIdAndIsPurchasedTrue(userId).stream()
+                .map(this::mapCartToCartDTOWithProductInfo)
+                .collect(Collectors.toList());
+    }
 }

@@ -68,6 +68,26 @@ public class CartController {
 
         return ResponseEntity.ok("Product added to the cart successfully");
     }
+    // akceptowanie koszyka
+    @PostMapping("/mark-as-purchased/{cartId}")
+    public ResponseEntity<String> markAsPurchased(@PathVariable Long cartId) {
+        cartService.markCartAsPurchased(cartId);
+
+        return ResponseEntity.ok("Cart marked as purchased successfully");
+    }
+    //wyswietlanie wszytskich koszyków zakceptowanych
+    @GetMapping("/accepted")
+    public ResponseEntity<List<CartDTO>> getAcceptedCarts() {
+        List<CartDTO> acceptedCarts = cartService.getAcceptedCarts();
+        return ResponseEntity.ok(acceptedCarts);
+    }
+    //wyswietlanie koszyków zakceptowanych dla uzytkownika zalogowanego
+    @GetMapping("/accepted/{userId}")
+    public ResponseEntity<List<CartDTO>> getAcceptedCartsForUser(@PathVariable Long userId) {
+        List<CartDTO> acceptedCarts = cartService.getAcceptedCartsForUser(userId);
+        return ResponseEntity.ok(acceptedCarts);
+    }
+
 }
 
 
