@@ -8,10 +8,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import com.olgasadokierska.analogstory.user.dtos.ReservationDTO;
 
 @RestController
 @RequiredArgsConstructor
@@ -79,6 +79,12 @@ public class ReservationController {
         reservationService.deleteReservation(reservationId);
 
         return ResponseEntity.ok("Rezerwacja została usunięta");
+    }
+    // edytowanie rezerwacji
+    @PutMapping("/{reservationId}")
+    public ResponseEntity<String> updateReservationDate(@PathVariable Long reservationId, @RequestBody ReservationDTO reservationDTO) {
+        reservationService.updateReservationDate(reservationId, reservationDTO);
+        return ResponseEntity.ok("Reservation date updated successfully");
     }
 
 }

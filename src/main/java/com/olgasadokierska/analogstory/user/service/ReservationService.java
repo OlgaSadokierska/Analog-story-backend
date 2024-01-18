@@ -1,5 +1,6 @@
 package com.olgasadokierska.analogstory.user.service;
 
+import com.olgasadokierska.analogstory.user.dtos.ReservationDTO;
 import com.olgasadokierska.analogstory.user.exception.AppException;
 import com.olgasadokierska.analogstory.user.model.Reservation;
 import com.olgasadokierska.analogstory.user.model.User;
@@ -55,5 +56,16 @@ public class ReservationService {
                 .orElseThrow(() -> new AppException("Rezerwacja nie znaleziona", HttpStatus.NOT_FOUND));
 
         reservationRepository.delete(reservation);
+    }
+    //edytowanie rezerwacji
+    public void updateReservationDate(Long reservationId, ReservationDTO reservationDTO) {
+        Reservation existingReservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new AppException("Rezerwacja nie znaleziona", HttpStatus.NOT_FOUND));
+
+        // Aktualizacja tylko daty rezerwacji
+        existingReservation.setReservationDate(reservationDTO.getReservationDate());
+        existingReservation.setExpirationDate(reservationDTO.getExpirationDate());
+
+        reservationRepository.save(existingReservation);
     }
 }
