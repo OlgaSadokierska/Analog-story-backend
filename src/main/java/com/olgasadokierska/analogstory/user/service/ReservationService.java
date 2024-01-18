@@ -49,4 +49,11 @@ public class ReservationService {
                 .filter(reservation -> reservation.getExpirationDate().isAfter(currentDate))
                 .collect(Collectors.toList());
     }
+    //usuwanie rezerwacji
+    public void deleteReservation(Long reservationId) {
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new AppException("Rezerwacja nie znaleziona", HttpStatus.NOT_FOUND));
+
+        reservationRepository.delete(reservation);
+    }
 }

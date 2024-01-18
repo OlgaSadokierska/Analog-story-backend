@@ -73,5 +73,12 @@ public class ReservationController {
         List<Reservation> activeReservations = reservationService.getActiveReservations();
         return ResponseEntity.ok(activeReservations);
     }
+    //usuwanie rezerwacji
+    @DeleteMapping("/{reservationId}")
+    public ResponseEntity<String> deleteReservation(@PathVariable Long reservationId) {
+        reservationService.deleteReservation(reservationId);
+
+        return ResponseEntity.ok("Rezerwacja została usunięta");
+    }
 
 }
