@@ -59,6 +59,15 @@ public class CartController {
         return ResponseEntity.ok(userCart);
     }
 
+    @PostMapping("/add-to-cart/{userId}/{productId}")
+    public ResponseEntity<String> addToCart(
+            @PathVariable Long userId,
+            @PathVariable Long productId) {
+
+        cartService.addToCart(userId, productId);
+
+        return ResponseEntity.ok("Product added to the cart successfully");
+    }
 }
 
 
