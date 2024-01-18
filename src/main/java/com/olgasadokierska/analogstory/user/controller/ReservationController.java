@@ -61,5 +61,17 @@ public class ReservationController {
         List<Reservation> reservations = reservationService.getReservationsByUser(userId);
         return ResponseEntity.ok(reservations);
     }
+    //wys. rezerwacji, które są po terminie
+    @GetMapping("/expired")
+    public ResponseEntity<List<Reservation>> getExpiredReservations() {
+        List<Reservation> expiredReservations = reservationService.getExpiredReservations();
+        return ResponseEntity.ok(expiredReservations);
+    }
+    //wys. rezerwacji w terminie
+    @GetMapping("/active")
+    public ResponseEntity<List<Reservation>> getActiveReservations() {
+        List<Reservation> activeReservations = reservationService.getActiveReservations();
+        return ResponseEntity.ok(activeReservations);
+    }
 
 }

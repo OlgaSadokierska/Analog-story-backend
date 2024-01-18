@@ -9,7 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,5 +33,20 @@ public class ReservationService {
                 .orElseThrow(() -> new AppException("Użytkownik nie znaleziony", HttpStatus.NOT_FOUND));
         return reservationRepository.findByUser(user);
     }
+// wys. rezerwacji po terminie (wyznacznikim terminu jest aktualna data)
+    public List<Reservation> getExpiredReservations() {
+        LocalDateTime currentDate = LocalDateTime.now();
 
+        return reservationRepository.findAll().stream()
+                .filter(reservation -> reservation.getExpirationDate().isBefore(currentDate))
+                .collect(Collectors.toList());
+    }
+    // wys. rezerwacji które są w terminie
+    public List<Reservation> getActiveReservations() {
+        LocalDateTime currentDate = LocalDateTime.now();
+
+        return reservationRepository.findAll().stream()
+                .filter(reservation -> reservation.getExpirationDate().isAfter(currentDate))
+                .collect(Collectors.toList());
+    }
 }
