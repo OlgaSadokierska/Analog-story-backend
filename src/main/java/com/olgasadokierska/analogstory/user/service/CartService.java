@@ -170,6 +170,15 @@ public class CartService {
         // Zapisanie rezerwacji
         reservationService.saveReservation(reservation);
     }
+    //usuwanie koszyka
+    @Transactional
+    public void deleteCart(Long cartId) {
+        // Pobranie koszyka na podstawie ID
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(() -> new AppException("Koszyk nie znaleziony", HttpStatus.NOT_FOUND));
 
+        // Usunięcie koszyka
+        cartRepository.delete(cart);
+    }
 
 }

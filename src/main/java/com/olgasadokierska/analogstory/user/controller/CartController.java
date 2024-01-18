@@ -88,7 +88,12 @@ public class CartController {
         List<CartDTO> acceptedCarts = cartService.getAcceptedCartsForUser(userId);
         return ResponseEntity.ok(acceptedCarts);
     }
-
+// usuwanie koszyka
+@DeleteMapping("/delete/{cartId}")
+public ResponseEntity<String> deleteCart(@PathVariable Long cartId) {
+    cartService.deleteCart(cartId);
+    return ResponseEntity.ok("Cart deleted successfully");
+}
 
 }
 
