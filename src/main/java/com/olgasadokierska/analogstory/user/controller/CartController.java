@@ -72,8 +72,9 @@ public class CartController {
     @PostMapping("/mark-as-purchased/{cartId}")
     public ResponseEntity<String> markAsPurchased(@PathVariable Long cartId) {
         cartService.markCartAsPurchased(cartId);
+        cartService.moveCartToReservation(cartId);
 
-        return ResponseEntity.ok("Cart marked as purchased successfully");
+        return ResponseEntity.ok("Cart marked as purchased and moved to reservation successfully");
     }
     //wyswietlanie wszytskich koszyków zakceptowanych
     @GetMapping("/accepted")
@@ -87,6 +88,7 @@ public class CartController {
         List<CartDTO> acceptedCarts = cartService.getAcceptedCartsForUser(userId);
         return ResponseEntity.ok(acceptedCarts);
     }
+
 
 }
 

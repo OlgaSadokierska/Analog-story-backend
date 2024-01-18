@@ -8,6 +8,7 @@ import com.olgasadokierska.analogstory.user.exception.AppException;
 import com.olgasadokierska.analogstory.user.mapper.CartMapper;
 import com.olgasadokierska.analogstory.user.model.Cart;
 import com.olgasadokierska.analogstory.user.model.Product;
+import com.olgasadokierska.analogstory.user.model.Reservation;
 import com.olgasadokierska.analogstory.user.model.User;
 import com.olgasadokierska.analogstory.user.repository.CartRepository;
 import com.olgasadokierska.analogstory.user.repository.ProductRepository;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.olgasadokierska.analogstory.user.dtos.CartDTO;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 @Service
@@ -26,7 +28,7 @@ public class CartService {
     private final CartRepository cartRepository;
     private final CartMapper cartMapper;
     private final ProductService productService;
-    private final UserService userService;
+    private final ReservationService reservationService;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
 
@@ -121,14 +123,19 @@ public class CartService {
 // akceptowanie koszyka
     @Transactional
     public void markCartAsPurchased(Long cartId) {
-        // Retrieve the cart based on the ID
+        // Pobranie koszyka na podstawie ID
         Cart cart = cartRepository.findById(cartId)
-                .orElseThrow(() -> new AppException("Cart not found", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new AppException("Koszyk nie znaleziony", HttpStatus.NOT_FOUND));
 
-        // Mark the cart as purchased
+        // Sprawdzenie, czy koszyk nie został już wcześniej zaakceptowany
+        if (cart.getIsPurchased()) {
+            throw new AppException("Koszyk został już zaakceptowany", HttpStatus.BAD_REQUEST);
+        }
+
+        // Ustawienie koszyka jako zaakceptowany
         cart.setIsPurchased(true);
 
-        // Save the changes to the database
+        // Zapisanie koszyka
         cartRepository.save(cart);
     }
     //wświetlanie wszytstkich koszyków zakceptowanych
@@ -145,4 +152,24 @@ public class CartService {
                 .map(this::mapCartToCartDTOWithProductInfo)
                 .collect(Collectors.toList());
     }
+    //dodwanie zakceptowaych koszytków do reseracji
+    @Transactional
+    public void moveCartToReservation(Long cartId) {
+        // Pobranie koszyka na podstawie ID
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(() -> new AppException("Koszyk nie znaleziony", HttpStatus.NOT_FOUND));
+
+        // Utworzenie obiektu rezerwacji
+        Reservation reservation = Reservation.builder()
+                .user(cart.getUser())
+                .product(cart.getProduct())
+                .reservationDate(LocalDateTime.now())
+                .expirationDate(LocalDateTime.now().plusDays(3)) // Ustawienie daty ważności na 3 dni
+                .build();
+
+        // Zapisanie rezerwacji
+        reservationService.saveReservation(reservation);
+    }
+
+
 }
