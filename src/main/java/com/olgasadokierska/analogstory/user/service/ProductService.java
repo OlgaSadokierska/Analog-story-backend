@@ -38,15 +38,6 @@ public class ProductService {
         Product savedProduct = productRepository.save(product);
         return productMapper.toProductDto(savedProduct);
     }
-/*
-    @Transactional(readOnly = true)
-    public List<ProductDto> getAllProducts() {
-        return productRepository.findAll().stream()
-                .map(productMapper::toProductDto)
-                .collect(Collectors.toList());
-    }
-*/
-
 
     @Transactional(readOnly = true)
     public List<ProductDto> getAllProducts() {
@@ -124,6 +115,9 @@ public class ProductService {
             cameraRepository.findByProductId(productId).ifPresent(camera -> {
                 if (!camera.getIsForSale()) {
                     throw new CannotDeleteProductException("Nie można usunąć produktu, ponieważ powiązana kamera nie jest na sprzedaż.");
+                } else {
+                    // Usuwanie powiązanego rekordu z tabeli Camera
+                    cameraRepository.delete(camera);
                 }
             });
 
@@ -131,18 +125,18 @@ public class ProductService {
             filmRepository.findByProductId(productId).ifPresent(film -> {
                 if (!film.getIsForSale()) {
                     throw new CannotDeleteProductException("Nie można usunąć produktu, ponieważ powiązany film nie jest na sprzedaż.");
+                } else {
+                    // Usuwanie powiązanego rekordu z tabeli Film
+                    filmRepository.delete(film);
                 }
             });
 
-            // Usuwanie związanych rekordów z tabel Camera i Film
-            cameraRepository.deleteByProductId(productId);
-            filmRepository.deleteByProductId(productId);
-
-            // Usuwanie produktu
+            // Usuwanie produktu z tabeli produkty
             productRepository.delete(product);
         } else {
             throw new ProductNotFoundException("Produkt o ID " + productId + " nie został znaleziony");
         }
     }
+
 }
 

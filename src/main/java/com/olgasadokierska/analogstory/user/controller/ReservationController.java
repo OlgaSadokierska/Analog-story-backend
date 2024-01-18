@@ -8,10 +8,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import com.olgasadokierska.analogstory.user.dtos.ReservationDTO;
 
 @RestController
 @RequiredArgsConstructor
@@ -60,6 +60,31 @@ public class ReservationController {
     public ResponseEntity<List<Reservation>> getUserReservations(@PathVariable long userId) {
         List<Reservation> reservations = reservationService.getReservationsByUser(userId);
         return ResponseEntity.ok(reservations);
+    }
+    //wys. rezerwacji, które są po terminie
+    @GetMapping("/expired")
+    public ResponseEntity<List<Reservation>> getExpiredReservations() {
+        List<Reservation> expiredReservations = reservationService.getExpiredReservations();
+        return ResponseEntity.ok(expiredReservations);
+    }
+    //wys. rezerwacji w terminie
+    @GetMapping("/active")
+    public ResponseEntity<List<Reservation>> getActiveReservations() {
+        List<Reservation> activeReservations = reservationService.getActiveReservations();
+        return ResponseEntity.ok(activeReservations);
+    }
+    //usuwanie rezerwacji
+    @DeleteMapping("/{reservationId}")
+    public ResponseEntity<String> deleteReservation(@PathVariable Long reservationId) {
+        reservationService.deleteReservation(reservationId);
+
+        return ResponseEntity.ok("Rezerwacja została usunięta");
+    }
+    // edytowanie rezerwacji
+    @PutMapping("/{reservationId}")
+    public ResponseEntity<String> updateReservationDate(@PathVariable Long reservationId, @RequestBody ReservationDTO reservationDTO) {
+        reservationService.updateReservationDate(reservationId, reservationDTO);
+        return ResponseEntity.ok("Reservation date updated successfully");
     }
 
 }
