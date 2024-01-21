@@ -13,4 +13,5 @@ public class CartDTO {
     private Long productId;
     private Boolean isPurchased;
     private ProductDto productDto;
+    private UserDto userDto;
 }

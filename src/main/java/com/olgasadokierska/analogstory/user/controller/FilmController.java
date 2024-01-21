@@ -8,14 +8,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import com.olgasadokierska.analogstory.user.service.UserService;
+
 @RestController
 @RequestMapping("/api/v1/films")
 @CrossOrigin(origins = "http://localhost:3000")
 public class FilmController {
-
     private final FilmService filmService;
     private final UserService userService;
+
     @Autowired
     public FilmController(FilmService filmService, UserService userService) {
         this.filmService = filmService;
@@ -27,5 +27,4 @@ public class FilmController {
         List<Film> films = userService.getUserFilms(userId);
         return ResponseEntity.ok(films);
     }
-
 }

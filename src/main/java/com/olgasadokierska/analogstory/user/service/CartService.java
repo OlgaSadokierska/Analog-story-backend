@@ -28,12 +28,10 @@ public class CartService {
     private final CartRepository cartRepository;
     private final CartMapper cartMapper;
     private final ProductService productService;
+    private final UserService userService;
     private final ReservationService reservationService;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
-
-
-
 
     @Transactional(readOnly = true)
     public List<CartDTO> getAllCarts() {
@@ -56,6 +54,10 @@ public class CartService {
             cartDTO.setProductDto(productDto);
         }
 
+        if (cart.getProduct() != null) {
+            UserDto userDto = userService.findById(cart.getUser().getId());
+            cartDTO.setUserDto(userDto);
+        }
         return cartDTO;
     }
 

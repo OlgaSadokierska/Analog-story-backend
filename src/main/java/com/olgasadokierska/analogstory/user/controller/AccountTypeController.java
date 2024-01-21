@@ -21,4 +21,3 @@ public class AccountTypeController {
         return accountTypeService.createAccountType(accountType);
     }
 }
-
