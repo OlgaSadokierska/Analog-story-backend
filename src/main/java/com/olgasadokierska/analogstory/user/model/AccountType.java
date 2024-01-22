@@ -18,6 +18,4 @@ public class AccountType {
 
     @Column(name = "name_type")
     private String name;
-
 }
-

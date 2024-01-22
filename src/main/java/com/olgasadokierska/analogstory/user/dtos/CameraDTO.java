@@ -9,6 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CameraDTO {
+
     private Long id;
     private Long userId;
     private String model;
@@ -16,5 +17,4 @@ public class CameraDTO {
     private Boolean filmLoaded;
     private Boolean isForSale;
     private Long productId;
-
 }

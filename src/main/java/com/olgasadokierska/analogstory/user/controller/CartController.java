@@ -12,6 +12,7 @@ import java.util.List;
 @RequestMapping("api/v1/carts")
 @CrossOrigin(origins = "http://localhost:3000")
 public class CartController {
+
     private final CartService cartService;
 
     @GetMapping("")
@@ -29,7 +30,6 @@ public class CartController {
     @GetMapping("/user/{user_id}")
     public ResponseEntity<List<CartDTO>> getUserCart(@PathVariable("user_id") Long userId) {
         List<CartDTO> userCart = cartService.getUserCart(userId);
-
         return ResponseEntity.ok(userCart);
     }
 
@@ -37,9 +37,7 @@ public class CartController {
     public ResponseEntity<String> addToCart(
             @PathVariable Long userId,
             @PathVariable Long productId) {
-
         cartService.addToCart(userId, productId);
-
         return ResponseEntity.ok("Product added to the cart successfully");
     }
 
@@ -47,7 +45,6 @@ public class CartController {
     public ResponseEntity<String> markAsPurchased(@PathVariable Long cartId) {
         cartService.markCartAsPurchased(cartId);
         cartService.moveCartToReservation(cartId);
-
         return ResponseEntity.ok("Cart marked as purchased and moved to reservation successfully");
     }
 

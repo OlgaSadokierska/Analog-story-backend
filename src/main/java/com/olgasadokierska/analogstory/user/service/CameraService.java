@@ -1,13 +1,10 @@
 package com.olgasadokierska.analogstory.user.service;
 
 import com.olgasadokierska.analogstory.user.dtos.CameraDTO;
-import com.olgasadokierska.analogstory.user.exception.CustomException;
 import com.olgasadokierska.analogstory.user.mapper.CameraMapper;
 import com.olgasadokierska.analogstory.user.model.Camera;
-import com.olgasadokierska.analogstory.user.model.Film;
 import com.olgasadokierska.analogstory.user.repository.CameraRepository;
 import com.olgasadokierska.analogstory.user.repository.FilmRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +15,6 @@ import java.util.List;
 public class CameraService {
 
     private final CameraRepository cameraRepository;
-    private final FilmRepository filmRepository;
     private final CameraMapper cameraMapper;
 
     public List<Camera> getAllCameras() {
@@ -35,6 +31,4 @@ public class CameraService {
 
         return cameraMapper.cameraToCameraDTO(camera);
     }
-
-
 }

@@ -14,6 +14,4 @@ public class AppException extends RuntimeException {
     public HttpStatus getStatus() {
         return status;
     }
-
-
 }

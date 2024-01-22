@@ -3,7 +3,6 @@ package com.olgasadokierska.analogstory.user.controller;
 import com.olgasadokierska.analogstory.user.dtos.UserMediaDTO;
 import com.olgasadokierska.analogstory.user.model.Reservation;
 import com.olgasadokierska.analogstory.user.service.ReservationService;
-import com.olgasadokierska.analogstory.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +17,7 @@ import com.olgasadokierska.analogstory.user.dtos.ReservationDTO;
 @RequestMapping("api/v1/reservations")
 @CrossOrigin(origins = "http://localhost:3000")
 public class ReservationController {
+
     private final ReservationService reservationService;
 
     @GetMapping("/{userId}/media")
@@ -32,14 +32,10 @@ public class ReservationController {
             for (Reservation reservation : reservations) {
                 LocalDateTime expirationDate = reservation.getExpirationDate();
                 LocalDateTime threeDaysBefore = LocalDateTime.now().plusDays(3);
-
                 if (expirationDate.truncatedTo(ChronoUnit.DAYS).isEqual(threeDaysBefore)) {
-
                     System.out.println("Uwaga! Data ważności rezerwacji za 3 dni: " + expirationDate);
                 }
-
                 if (expirationDate.truncatedTo(ChronoUnit.DAYS).isBefore(LocalDateTime.now().truncatedTo(ChronoUnit.DAYS))) {
-
                     System.out.println("Uwaga! Rezerwacja wygasła: " + expirationDate);
                 }
             }

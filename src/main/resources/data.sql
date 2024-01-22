@@ -1,4 +1,3 @@
-
 -- insert  account type table
 INSERT INTO account_type (name_type) VALUES
     ('administrator'),
@@ -135,7 +134,7 @@ INSERT INTO reservation (user_id, product_id, reservation_date, expiration_date)
        (16,23,'2023-11-15 04:46:00', '2023-12-04 12:00:00'),
        (8,3,'2023-11-17 13:00:00', '2023-12-30 14:05:00'),
        (5,20,'2023-10-12 12:14:00', '2023-12-05 17:05:00');
--- insert card
+-- insert cart
 INSERT INTO cart(user_id, product_id, is_accepted) values
     (4,2,false),
     (5,3,false),
@@ -144,8 +143,3 @@ INSERT INTO cart(user_id, product_id, is_accepted) values
     (7,25,false),
     (6,27,false),
     (5,30,false);
-
-
-
-
-

@@ -10,15 +10,15 @@ import java.util.Optional;
 
 @Repository
 public interface FilmRepository extends JpaRepository<Film, Long> {
+
     List<Film> findByUser(User user);
     boolean existsByProductId(Long productId);
 
     Optional<Film> findByProductId(Long productId);
 
-    // Dodaj odpowiednie metody do zrealizowania warunków
     default List<Film> findByIsForSale(boolean isForSale) {
         return null;
     }
-    void deleteByProductId(Long productId);
 
+    void deleteByProductId(Long productId);
 }

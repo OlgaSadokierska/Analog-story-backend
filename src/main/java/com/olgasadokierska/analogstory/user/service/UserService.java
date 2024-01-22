@@ -3,7 +3,6 @@ package com.olgasadokierska.analogstory.user.service;
 import com.olgasadokierska.analogstory.user.dtos.*;
 import com.olgasadokierska.analogstory.user.exception.AppException;
 import com.olgasadokierska.analogstory.user.exception.UserNotFoundException;
-import com.olgasadokierska.analogstory.user.mapper.CameraMapper;
 import com.olgasadokierska.analogstory.user.mapper.UserMapper;
 import com.olgasadokierska.analogstory.user.model.*;
 import com.olgasadokierska.analogstory.user.repository.CameraRepository;
@@ -14,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.olgasadokierska.analogstory.user.mapper.CartMapper;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,20 +27,15 @@ public class UserService {
     private final CameraRepository cameraRepository;
     private final FilmRepository filmRepository;
 
-
     public UserDto register(SignUpDto signUpDto) {
         String login = signUpDto.getLogin();
         if (userRepository.existsByLogin(login)) {
             throw new AppException("Login already exists", HttpStatus.BAD_REQUEST);
         }
-
         User user = userMapper.signUpToUser(signUpDto);
-
         String encodedPassword = passwordEncoder.encode(signUpDto.getPassword());
         user.setPassword(encodedPassword);
-
         User savedUser = userRepository.save(user);
-
         return userMapper.toUserDto(savedUser);
     }
 
@@ -58,13 +51,10 @@ public class UserService {
         return userMapper.toUserDto(user);
     }
 
-
-
     public UserDto login(CredentialsDto credentialsDto) {
         String login = credentialsDto.getLogin();
         User user = userRepository.findByLogin(login)
                 .orElseThrow(() -> new AppException("Unknown user", HttpStatus.NOT_FOUND));
-
         if (passwordEncoder.matches(credentialsDto.getPassword(), user.getPassword())) {
             return userMapper.toUserDto(user);
         }
@@ -80,7 +70,6 @@ public class UserService {
     public void deleteUser(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException("User not found", HttpStatus.NOT_FOUND));
-
         userRepository.delete(user);
     }
 
@@ -88,16 +77,12 @@ public class UserService {
     public UserDto addEmployee(SignUpDto signUpDto) {
         User employee = userMapper.signUpToUser(signUpDto);
         employee.setAccountType(new AccountType(3L, "employee"));
-
         String encodedPassword = passwordEncoder.encode(signUpDto.getPassword());
         employee.setPassword(encodedPassword);
-
         User savedEmployee = userRepository.save(employee);
-
         return userMapper.toUserDto(savedEmployee);
     }
 
-    //wyświetlanie samego aparatu
     public List<Camera> getUserCameras(Long userId) {
         Optional<User> userOptional = userRepository.findById(userId);
         if (userOptional.isPresent()) {
@@ -108,7 +93,6 @@ public class UserService {
         }
     }
 
-    // wyswietlanie samych klisz
     public List<Film> getUserFilms(Long userId) {
         Optional<User> userOptional = userRepository.findById(userId);
         if (userOptional.isPresent()) {
@@ -118,8 +102,6 @@ public class UserService {
             throw new UserNotFoundException("Użytkownik o ID " + userId + " nie istnieje");
         }
     }
-
-    //wyswietlanie klisz i aparatu wraz z informacjami o produkcie
 
     public UserMediaDTO getUserMedia(Long userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
@@ -137,7 +119,6 @@ public class UserService {
 
             for (Film film : filmy) {
                 Product product = film.getProduct();
-
                 if (product != null) {
                     System.out.println("Informacje o produkcie dla filmu " + film.getId() + ": " + product.getDescription() + ", Cena: " + product.getPrice());
                 }
@@ -146,7 +127,6 @@ public class UserService {
             UserMediaDTO userMediaDTO = new UserMediaDTO();
             userMediaDTO.setCameras(kamery);
             userMediaDTO.setFilms(filmy);
-
             return userMediaDTO;
         } else {
             throw new UserNotFoundException("Użytkownik o ID " + userId + " nie istnieje");
@@ -157,7 +137,6 @@ public class UserService {
     public Integer[] findUserDataByEmail(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new AppException("User not found for email: " + email, HttpStatus.NOT_FOUND));
-
         Integer[] userData = {Integer.parseInt(user.getId().toString()), Integer.parseInt(user.getAccountType().getId().toString())};
         return userData;
     }
@@ -166,7 +145,6 @@ public class UserService {
     public UserDto updateUser(Long userId, SignUpDto signUpDto) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found", new Throwable()));
-
         user.setFirstName(signUpDto.getFirstName());
         user.setLastName(signUpDto.getLastName());
         user.setEmail(signUpDto.getEmail());
@@ -179,23 +157,17 @@ public class UserService {
         }
 
         User updatedUser = userRepository.save(user);
-
         return userMapper.toUserDto(updatedUser);
     }
 
-
     public List<UserDto> findAllEmployees() {
         List<User> employees = userRepository.findAllEmployees();
-
         return userMapper.toUserDtoList(employees);
     }
 
     public List<UserDto> findAllUsers() {
         List<User> employees = userRepository.findAllUsers();
-
         return userMapper.toUserDtoList(employees);
     }
 
-
 }
-

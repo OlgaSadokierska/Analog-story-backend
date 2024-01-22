@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 public class ReservationDTO {
+
     private LocalDateTime reservationDate;
     private LocalDateTime expirationDate;
 }

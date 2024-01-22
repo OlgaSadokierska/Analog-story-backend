@@ -17,7 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -47,96 +46,70 @@ public class ProductService {
                             cameraRepository.findByProductId(product.getId())
                                     .map(Camera::getIsForSale)
                                     .orElse(false);
-
                     boolean isFilmForSale = !filmRepository.existsByProductId(product.getId()) ||
                             filmRepository.findByProductId(product.getId())
                                     .map(Film::getIsForSale)
                                     .orElse(false);
-
-                    // Sprawdzenie, czy produkt nie ma powiązań z Camera, gdzie isForSale jest ustawione na false
-                    // oraz nie ma powiązań z Film, gdzie isForSale jest ustawione na false
                     boolean isProductInCart = cartRepository.existsByProductId(product.getId());
-
                     return isCameraForSale && isFilmForSale && !isProductInCart;
                 })
                 .map(product -> {
                     ProductDto productDto = productMapper.toProductDto(product);
-
-                    // Dodanie informacji o modelu i marce związanej z Camera
                     cameraRepository.findByProductId(product.getId()).ifPresent(camera -> {
                         productDto.setModel(camera.getModel());
                         productDto.setBrand(camera.getBrand());
                     });
-
                     return productDto;
                 })
                 .collect(Collectors.toList());
     }
 
-
     public String getProductInfoById(Long productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new AppException("Produkt o ID " + productId + " nie istnieje", HttpStatus.NOT_FOUND));
-
-
         return "Opis: " + product.getDescription() + ", Cena: " + product.getPrice();
     }
+
     @Transactional(readOnly = true)
     public ProductDto getProductDtoById(Long productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new AppException("Product with ID " + productId + " not found", HttpStatus.NOT_FOUND));
-
-
         return productMapper.toProductDto(product);
-
     }
-//edycja produktu
+
     @Transactional
     public ProductDto updateProduct(Long productId, ProductDto updatedProductDto) {
         Product existingProduct = productRepository.findById(productId)
                 .orElseThrow(() -> new AppException("Product with ID " + productId + " not found", HttpStatus.NOT_FOUND));
-
         existingProduct.setDescription(updatedProductDto.getDescription());
         existingProduct.setPrice(updatedProductDto.getPrice());
-
         Product updatedProduct = productRepository.save(existingProduct);
-
         return productMapper.toProductDto(updatedProduct);
     }
-    // usuwanie wybrango produktu
+
     @Transactional
     public void deleteProduct(Long productId) throws ProductNotFoundException, CannotDeleteProductException {
         Optional<Product> productOptional = productRepository.findById(productId);
-
         if (productOptional.isPresent()) {
             Product product = productOptional.get();
-
-            // Sprawdzenie, czy Camera ma isForSale ustawione na true
             cameraRepository.findByProductId(productId).ifPresent(camera -> {
                 if (!camera.getIsForSale()) {
                     throw new CannotDeleteProductException("Nie można usunąć produktu, ponieważ powiązana kamera nie jest na sprzedaż.");
                 } else {
-                    // Usuwanie powiązanego rekordu z tabeli Camera
                     cameraRepository.delete(camera);
                 }
             });
 
-            // Sprawdzenie, czy Film ma isForSale ustawione na true
             filmRepository.findByProductId(productId).ifPresent(film -> {
                 if (!film.getIsForSale()) {
                     throw new CannotDeleteProductException("Nie można usunąć produktu, ponieważ powiązany film nie jest na sprzedaż.");
                 } else {
-                    // Usuwanie powiązanego rekordu z tabeli Film
                     filmRepository.delete(film);
                 }
             });
-
-            // Usuwanie produktu z tabeli produkty
             productRepository.delete(product);
         } else {
             throw new ProductNotFoundException("Produkt o ID " + productId + " nie został znaleziony");
         }
     }
-
 }
-
