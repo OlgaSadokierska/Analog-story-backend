@@ -46,7 +46,7 @@ public class CameraService {
 //dodawanie aparatu
 @Transactional
 public CameraDTO addCamera(Long userId, CameraDTO cameraDTO) {
-    try {
+
         // Sprawdzenie, czy użytkownik istnieje
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException("Użytkownik o ID " + userId + " nie istnieje", HttpStatus.NOT_FOUND));
@@ -72,13 +72,7 @@ public CameraDTO addCamera(Long userId, CameraDTO cameraDTO) {
 
         // Mapowanie zapisanej kamery na DTO i zwrócenie odpowiedzi
         return cameraMapper.cameraToCameraDTO(savedCamera);
-}
 
-    } catch (CustomException e) {
-        throw e; // Rzucamy ponownie wyjątek, aby był obsłużony przez @ExceptionHandler
-    } catch (Exception e) {
-        throw new CustomException("Błąd podczas przetwarzania żądania", HttpStatus.INTERNAL_SERVER_ERROR);
-    }
 }
 
     @Transactional

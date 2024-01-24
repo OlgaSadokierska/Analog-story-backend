@@ -35,6 +35,9 @@ public class Film {
     @Column(name = "is_for_sale")
     private Boolean isForSale;
 
+    @Column(name = "max_loaded")
+    private Integer maxLoaded;
+
     public void setIdCamera(Long idCamera) {
         this.idCamera = idCamera;
     }

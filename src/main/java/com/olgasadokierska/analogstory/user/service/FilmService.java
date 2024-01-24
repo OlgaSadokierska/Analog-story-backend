@@ -54,8 +54,7 @@ public Film addFilm(long userId, Film film) {
         // Ustawienie produktu i użytkownika dla filmu
         film.setProduct(savedProduct);
         film.setUser(user);
-        film.setIsForSale(false);
-        film.setIsFull(false);
+
 
         // Zapisanie filmu
         return filmRepository.save(film);

@@ -150,4 +150,10 @@ public class CartService {
                 .orElseThrow(() -> new AppException("Koszyk nie znaleziony", HttpStatus.NOT_FOUND));
         cartRepository.delete(cart);
     }
+    @Transactional(readOnly = true)
+    public List<CartDTO> getUnacceptedCartsForUser(Long userId) {
+        return cartRepository.findByUserIdAndIsPurchasedFalse(userId).stream()
+                .map(this::mapCartToCartDTOWithProductInfo)
+                .collect(Collectors.toList());
+    }
 }
