@@ -12,10 +12,5 @@ import lombok.NoArgsConstructor;
 public class AccountTypeDto {
 
     private Long id;
-
     private String name;
-
-
-
 }
-

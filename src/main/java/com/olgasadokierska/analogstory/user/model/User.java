@@ -35,7 +35,6 @@ public class User implements UserDetails {
     @PrePersist
     public void prePersist() {
         if (accountType == null) {
-
             accountType = new AccountType(2L, "Domyślny");
         }
     }

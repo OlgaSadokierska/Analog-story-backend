@@ -10,11 +10,14 @@ import java.util.Optional;
 
 @Repository
 public interface CameraRepository extends JpaRepository<Camera, Long> {
+
     List<Camera> findByUser(User user);
+
     List<Camera> findByIsForSale(boolean isForSale);
 
     boolean existsByProductId(Long productId);
 
     Optional<Camera> findByProductId(Long productId);
+
     void deleteByProductId(Long productId);
 }

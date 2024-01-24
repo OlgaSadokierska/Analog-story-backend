@@ -3,7 +3,6 @@ package com.olgasadokierska.analogstory.user.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-
 @Entity
 @Table(name = "product")
 @Data
@@ -24,6 +23,5 @@ public class Product {
     private String description;
 
     private double price;
-
 
 }

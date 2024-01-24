@@ -17,7 +17,4 @@ public class AccountTypeService {
 
         return accountTypeRepository.save(accountType);
     }
-
-
-
 }

@@ -1,6 +1,6 @@
 package com.olgasadokierska.analogstory.user.dtos;
 
-
+import jakarta.annotation.Nullable;
 import lombok.*;
 
 @Data
@@ -11,12 +11,11 @@ import lombok.*;
 @NoArgsConstructor
 public class ProductDto {
 
+    @Nullable
     private Long id;
     private Long productTypeId;
     private String description;
     private double price;
     private String model;
     private String brand;
-
-
 }

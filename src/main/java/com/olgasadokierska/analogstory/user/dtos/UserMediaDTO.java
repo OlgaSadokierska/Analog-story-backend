@@ -18,18 +18,8 @@ public class UserMediaDTO {
     @Getter
     private List<Reservation> reservations;
 
-    public void setKamery(List<Camera> films) {
-            this.cameras = cameras;
-        }
-
-    public void setFilmy(List<Film> films) {
-            this.films = films;
-        }
-
     public void setReservations(List<Reservation> reservations) {
         this.reservations = reservations;
     }
+
     }
-
-
-

@@ -3,7 +3,7 @@ package com.olgasadokierska.analogstory.user.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import com.olgasadokierska.analogstory.user.model.User;
+
 @Entity
 @Getter
 @Setter
@@ -13,7 +13,6 @@ public class Film {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
 
     @Column(name = "id_camera")
     private Long idCamera;
@@ -36,10 +35,6 @@ public class Film {
     @Column(name = "is_for_sale")
     private Boolean isForSale;
 
-    @Column(name = "max_loaded")
-    private Integer maxLoaded;
-
-
     public void setIdCamera(Long idCamera) {
         this.idCamera = idCamera;
     }
@@ -50,7 +45,5 @@ public class Film {
     public Boolean getIsForSale() {
         return isForSale;
     }
-
-
 
 }

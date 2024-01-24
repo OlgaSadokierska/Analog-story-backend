@@ -10,6 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CameraDTO {
+
     private Long id;
     private Long userId;
     private String model;

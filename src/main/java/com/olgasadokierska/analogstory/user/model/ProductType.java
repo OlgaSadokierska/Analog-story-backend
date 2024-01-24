@@ -1,6 +1,5 @@
 package com.olgasadokierska.analogstory.user.model;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,5 +18,5 @@ public class ProductType {
 
     @Column(name = "nameTypeProduct", nullable = false, unique = true)
     private String typeName;
-}
 
+}

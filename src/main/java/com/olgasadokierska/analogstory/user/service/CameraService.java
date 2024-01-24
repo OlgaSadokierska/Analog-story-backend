@@ -7,6 +7,9 @@ import com.olgasadokierska.analogstory.user.mapper.CameraMapper;
 import com.olgasadokierska.analogstory.user.model.*;
 import com.olgasadokierska.analogstory.user.repository.*;
 import jakarta.transaction.Transactional;
+import com.olgasadokierska.analogstory.user.model.Camera;
+import com.olgasadokierska.analogstory.user.repository.CameraRepository;
+import com.olgasadokierska.analogstory.user.repository.FilmRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -20,7 +23,6 @@ import java.util.Optional;
 public class CameraService {
 
     private final CameraRepository cameraRepository;
-    private final FilmRepository filmRepository;
     private final CameraMapper cameraMapper;
     private final ProductTypeRepository productTypeRepository;
     private final UserRepository userRepository;
@@ -70,6 +72,7 @@ public CameraDTO addCamera(Long userId, CameraDTO cameraDTO) {
 
         // Mapowanie zapisanej kamery na DTO i zwrócenie odpowiedzi
         return cameraMapper.cameraToCameraDTO(savedCamera);
+}
 
     } catch (CustomException e) {
         throw e; // Rzucamy ponownie wyjątek, aby był obsłużony przez @ExceptionHandler

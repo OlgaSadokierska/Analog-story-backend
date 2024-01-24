@@ -25,4 +25,3 @@ public class ProductTypeService {
         return productTypeRepository.save(productType);
     }
 }
-

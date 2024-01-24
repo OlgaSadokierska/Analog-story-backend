@@ -4,7 +4,6 @@ import com.olgasadokierska.analogstory.user.config.AuthenticationRequest;
 import com.olgasadokierska.analogstory.user.config.AuthenticationResponse;
 import com.olgasadokierska.analogstory.user.config.JwtService;
 import com.olgasadokierska.analogstory.user.config.RegisterRequest;
-import com.olgasadokierska.analogstory.user.model.AccountType;
 import com.olgasadokierska.analogstory.user.model.User;
 import com.olgasadokierska.analogstory.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,10 +15,9 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
+
     private final UserRepository repository;
-
     private final PasswordEncoder passwordEncoder;
-
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
@@ -50,14 +48,10 @@ public class AuthService {
         var user = repository.findByEmail(request.getEmail())
                 .orElseThrow();
 
-        var userId = user.getId();
-
         var jwtToken = jwtService.generateToken(user);
-
 
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
     }
-
 }
