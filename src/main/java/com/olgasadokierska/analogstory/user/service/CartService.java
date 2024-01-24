@@ -182,5 +182,11 @@ public class CartService {
         // Usunięcie koszyka
         cartRepository.delete(cart);
     }
-
+// wys niezakceptowanych koszykow, które należą do uzytkownika zalo
+@Transactional(readOnly = true)
+public List<CartDTO> getUnacceptedCartsForUser(Long userId) {
+    return cartRepository.findByUserIdAndIsPurchasedFalse(userId).stream()
+            .map(this::mapCartToCartDTOWithProductInfo)
+            .collect(Collectors.toList());
+}
 }

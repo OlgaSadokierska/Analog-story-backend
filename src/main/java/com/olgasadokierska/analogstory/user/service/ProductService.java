@@ -32,6 +32,11 @@ public class ProductService {
     private final FilmRepository filmRepository;
     private final CartRepository cartRepository;
 
+
+    public Product saveProduct(Product product) {
+        return productRepository.save(product);
+    }
+
     @Transactional
     public ProductDto createProduct(ProductDto productDto) {
         Product product = productMapper.toProduct(productDto);
@@ -137,6 +142,7 @@ public class ProductService {
             throw new ProductNotFoundException("Produkt o ID " + productId + " nie został znaleziony");
         }
     }
+
 
 }
 

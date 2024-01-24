@@ -1,5 +1,6 @@
 package com.olgasadokierska.analogstory.user.dtos;
 
+import io.micrometer.common.lang.Nullable;
 import lombok.*;
 
 @Data
@@ -16,5 +17,6 @@ public class CameraDTO {
     private Boolean filmLoaded;
     private Boolean isForSale;
     private Long productId;
+
 
 }

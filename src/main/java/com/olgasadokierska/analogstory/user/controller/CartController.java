@@ -68,4 +68,10 @@ public class CartController {
         cartService.deleteCart(cartId);
         return ResponseEntity.ok("Cart deleted successfully");
     }
+
+    @GetMapping("/unaccepted/{userId}")
+    public ResponseEntity<List<CartDTO>> getUnacceptedCartsForUser(@PathVariable Long userId) {
+        List<CartDTO> unacceptedCarts = cartService.getUnacceptedCartsForUser(userId);
+        return ResponseEntity.ok(unacceptedCarts);
+    }
 }

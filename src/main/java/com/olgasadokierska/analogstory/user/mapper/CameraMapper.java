@@ -14,4 +14,6 @@ public interface CameraMapper {
     @Mapping(target = "userId", source = "user.id")
     @Mapping(target = "productId", source = "product.id")
     CameraDTO cameraToCameraDTO(Camera camera);
+    Camera cameraDtoToCamera(CameraDTO cameraDTO);
+
 }

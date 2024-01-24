@@ -35,7 +35,7 @@ public class Camera {
 
     @ManyToOne
     @JoinColumn(name = "product_id")
-    private Product product;
+    private Product product ;
 
     public Boolean getIsForSale() {
         return isForSale;
