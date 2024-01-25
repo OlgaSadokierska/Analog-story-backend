@@ -1,5 +1,6 @@
 package com.olgasadokierska.analogstory.user.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,13 +9,14 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "film")
+@JsonIgnoreProperties({"product"})
 public class Film {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "id_camera")
+    @Column(name = "id_camera", nullable = true)
     private Long idCamera;
 
     @Column(name = "loaded_frames")
@@ -35,6 +37,9 @@ public class Film {
     @Column(name = "is_for_sale")
     private Boolean isForSale;
 
+    @Column(name = "max_loaded")
+    private Integer maxLoaded;
+
     public void setIdCamera(Long idCamera) {
         this.idCamera = idCamera;
     }
@@ -45,5 +50,4 @@ public class Film {
     public Boolean getIsForSale() {
         return isForSale;
     }
-
 }

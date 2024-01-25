@@ -60,6 +60,12 @@ public class CartController {
         return ResponseEntity.ok(acceptedCarts);
     }
 
+    @GetMapping("/unaccepted/{userId}")
+    public ResponseEntity<List<CartDTO>> getUnacceptedCartsForUser(@PathVariable Long userId) {
+        List<CartDTO> unacceptedCarts = cartService.getUnacceptedCartsForUser(userId);
+        return ResponseEntity.ok(unacceptedCarts);
+    }
+
     @DeleteMapping("/delete/{cartId}")
     public ResponseEntity<String> deleteCart(@PathVariable Long cartId) {
         cartService.deleteCart(cartId);
