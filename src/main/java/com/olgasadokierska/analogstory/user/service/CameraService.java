@@ -1,6 +1,7 @@
 package com.olgasadokierska.analogstory.user.service;
 
 import com.olgasadokierska.analogstory.user.dtos.CameraDTO;
+import com.olgasadokierska.analogstory.user.dtos.ProductDto;
 import com.olgasadokierska.analogstory.user.exception.CustomException;
 import com.olgasadokierska.analogstory.user.mapper.CameraMapper;
 import com.olgasadokierska.analogstory.user.model.*;
@@ -73,7 +74,7 @@ public class CameraService {
     }
 
     @Transactional
-    public CameraDTO setCameraForSale(Long cameraId) {
+    public CameraDTO setCameraForSale(Long cameraId, ProductDto productDto) {
         try {
             // Pobranie kamery
             Camera camera = cameraRepository.findById(cameraId)
@@ -84,13 +85,15 @@ public class CameraService {
                 throw new CustomException("Załadowany film. Usuń go przed ustawieniem kamery na sprzedaż.", HttpStatus.BAD_REQUEST);
             }
 
+            // Pobranie produktu z kamery
+            Product product = camera.getProduct();
+
             // Ustawienie isForSale na true
             camera.setIsForSale(true);
 
-            // Ustawienie opisu i ceny w tabeli Product
-            Product product = camera.getProduct();
-            product.setDescription("Nowy opis");  // Tutaj podajesz odpowiedni opis
-            product.setPrice(100.0);  // Tutaj podajesz odpowiednią cenę
+            // Ustawienie opisu i ceny w tabeli Product z danych przekazanych w zapytaniu
+            product.setDescription(productDto.getDescription());
+            product.setPrice(productDto.getPrice());
 
             // Zapisanie zmian w bazie danych
             cameraRepository.save(camera);
