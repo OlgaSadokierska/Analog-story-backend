@@ -11,8 +11,7 @@ import lombok.*;
 @NoArgsConstructor
 public class ProductDto {
 
-    @Nullable
-    private Long id;
+    private Long userID;
     private Long productTypeId;
     private String description;
     private double price;

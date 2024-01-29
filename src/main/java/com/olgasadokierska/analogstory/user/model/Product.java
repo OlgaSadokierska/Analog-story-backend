@@ -20,6 +20,10 @@ public class Product {
     @JoinColumn(name = "product_type_id")
     private ProductType productType;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     private String description;
 
     private double price;

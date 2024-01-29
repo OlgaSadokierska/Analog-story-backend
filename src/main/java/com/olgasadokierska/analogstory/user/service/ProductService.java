@@ -42,14 +42,14 @@ public class ProductService {
     public List<ProductDto> getAllProducts() {
         return productRepository.findAll().stream()
                 .filter(product -> {
-                    boolean isCameraForSale = !cameraRepository.existsByProductId(product.getId()) ||
-                            cameraRepository.findByProductId(product.getId())
-                                    .map(Camera::getIsForSale)
-                                    .orElse(false);
-                    boolean isFilmForSale = !filmRepository.existsByProductId(product.getId()) ||
-                            filmRepository.findByProductId(product.getId())
-                                    .map(Film::getIsForSale)
-                                    .orElse(false);
+                    boolean isCameraForSale = !cameraRepository.existsByProductId(product.getId());
+                    cameraRepository.findByProductId(product.getId())
+                            .map(Camera::getIsForSale)
+                            .orElse(false);
+                    boolean isFilmForSale = !filmRepository.existsByProductId(product.getId());
+                    filmRepository.findByProductId(product.getId())
+                            .map(Film::getIsForSale)
+                            .orElse(false);
                     boolean isProductInCart = cartRepository.existsByProductId(product.getId());
                     return isCameraForSale && isFilmForSale && !isProductInCart;
                 })
@@ -59,7 +59,9 @@ public class ProductService {
                         productDto.setModel(camera.getModel());
                         productDto.setBrand(camera.getBrand());
                     });
+                    productDto.setUserID(product.getUser().getId());
                     return productDto;
+
                 })
                 .collect(Collectors.toList());
     }

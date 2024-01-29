@@ -3,6 +3,9 @@ package com.olgasadokierska.analogstory.user.controller;
 import com.olgasadokierska.analogstory.user.dtos.ProductDto;
 import com.olgasadokierska.analogstory.user.exception.CannotDeleteProductException;
 import com.olgasadokierska.analogstory.user.exception.ProductNotFoundException;
+import com.olgasadokierska.analogstory.user.mapper.ProductMapper;
+import com.olgasadokierska.analogstory.user.model.Product;
+import com.olgasadokierska.analogstory.user.model.User;
 import com.olgasadokierska.analogstory.user.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,6 +22,7 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
+    private final ProductMapper productMapper;
 
     @GetMapping("")
     public ResponseEntity<List<ProductDto>> getAllProducts() {
@@ -27,8 +31,8 @@ public class ProductController {
     }
 
     @PostMapping("")
-    public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto productDto) {
-        ProductDto createdProduct = productService.createProduct(productDto);
+    public ResponseEntity<Product> createProduct(@RequestBody ProductDto productDto) {
+        Product createdProduct = productMapper.toProduct(productDto);
         return ResponseEntity.created(URI.create("/products/" + createdProduct.getId())).body(createdProduct);
     }
 
