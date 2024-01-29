@@ -59,7 +59,7 @@ public class ProductService {
                         productDto.setModel(camera.getModel());
                         productDto.setBrand(camera.getBrand());
                     });
-                    productDto.setUserID(product.getUser().getId());
+                    productDto.setUserId(product.getUser().getId());
                     return productDto;
 
                 })

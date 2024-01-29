@@ -13,4 +13,10 @@ public interface ProductMapper {
 
     @Mapping(target = "productType.id", source = "productTypeId")
     Product toProduct(ProductDto productDto);
+
+    @Mapping(target = "userId", source = "user.id")
+    ProductDto toProductDtoWithUser(Product product);
+
+    @Mapping(target = "user.id", source = "userId")
+    Product toProductWithUser(ProductDto productDto);
 }

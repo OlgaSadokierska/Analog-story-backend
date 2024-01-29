@@ -31,9 +31,9 @@ public class ProductController {
     }
 
     @PostMapping("")
-    public ResponseEntity<Product> createProduct(@RequestBody ProductDto productDto) {
-        Product createdProduct = productMapper.toProduct(productDto);
-        return ResponseEntity.created(URI.create("/products/" + createdProduct.getId())).body(createdProduct);
+    public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto productDto) {
+        ProductDto createdProduct = productService.createProduct(productDto);
+        return ResponseEntity.created(URI.create("/products/" + createdProduct.getUserId())).body(createdProduct);
     }
 
     @PutMapping("/{productId}")
