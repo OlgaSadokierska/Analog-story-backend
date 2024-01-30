@@ -20,4 +20,5 @@ public interface CameraRepository extends JpaRepository<Camera, Long> {
     Optional<Camera> findByProductId(Long productId);
 
     void deleteByProductId(Long productId);
+
 }

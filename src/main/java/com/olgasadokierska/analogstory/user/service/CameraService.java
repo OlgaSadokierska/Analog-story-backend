@@ -54,7 +54,9 @@ public class CameraService {
         product.setProductType(productTypeRepository.getOne(1L)); // Ustawienie odpowiedniego productTypeId (1L w tym przypadku)
         product.setDescription(null);  // Ustawienie opisu na null
         product.setPrice(0.0);  // Ustawienie ceny na null
+        product.setUser(user);
         Product savedProduct = productRepository.save(product);
+
 
         // Utworzenie kamery
         Camera camera = new Camera();

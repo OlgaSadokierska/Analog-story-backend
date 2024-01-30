@@ -39,6 +39,9 @@ public class Film {
 
     @Column(name = "max_loaded")
     private Integer maxLoaded;
+    private String model;
+
+    private String brand;
 
     public void setIdCamera(Long idCamera) {
         this.idCamera = idCamera;

@@ -11,4 +11,8 @@ public class FilmDTO {
     private Long idCamera;
     private int loadedFrames;
     private boolean isFull;
+    private String model;
+    private String brand;
+    private boolean isForSale;
+    private int maxLoaded;
 }

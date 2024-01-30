@@ -17,4 +17,5 @@ public class CameraDTO {
     private Boolean filmLoaded;
     private Boolean isForSale;
     private Long productId;
+
 }

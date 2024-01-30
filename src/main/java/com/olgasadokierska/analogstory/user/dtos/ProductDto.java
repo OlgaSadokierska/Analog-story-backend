@@ -14,6 +14,7 @@ public class ProductDto {
     @Nullable
     private Long id;
     private Long productTypeId;
+    private Long userId;
     private String description;
     private double price;
     private String model;

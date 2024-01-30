@@ -23,5 +23,8 @@ public class Product {
     private String description;
 
     private double price;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
 }

@@ -107,6 +107,7 @@ public class UserService {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
+
             List<Camera> kamery = cameraRepository.findByUser(user);
             List<Film> filmy = filmRepository.findByUser(user);
 
