@@ -26,10 +26,10 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
-    @PostMapping("")
-    public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto productDto) {
-        ProductDto createdProduct = productService.createProduct(productDto);
-        return ResponseEntity.created(URI.create("/products/" + createdProduct.getId())).body(createdProduct);
+    @PostMapping("/create/{userId}")
+    public ResponseEntity<ProductDto> createProduct(@PathVariable Long userId, @RequestBody ProductDto productDto) {
+        ProductDto createdProduct = productService.createProduct(userId, productDto);
+        return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
     }
 
     @PutMapping("/{productId}")

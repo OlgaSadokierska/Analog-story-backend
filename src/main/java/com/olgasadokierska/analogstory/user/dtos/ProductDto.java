@@ -17,6 +17,7 @@ public class ProductDto {
     private Long userId;
     private String description;
     private double price;
-
+ private String model;
+ private String brand;
 
 }

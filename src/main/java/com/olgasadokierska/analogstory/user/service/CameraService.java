@@ -58,6 +58,8 @@ public class CameraService {
         product.setDescription(null);  // Ustawienie opisu na null
         product.setPrice(0.0);  // Ustawienie ceny na null
         product.setUser(user);
+        product.setModel(cameraDTO.getModel());
+        product.setBrand(cameraDTO.getBrand());
         Product savedProduct = productRepository.save(product);
 
         Camera camera = new Camera();
@@ -91,6 +93,7 @@ public class CameraService {
 
             product.setDescription(productDto.getDescription());
             product.setPrice(productDto.getPrice());
+
 
             cameraRepository.save(camera);
 
@@ -142,6 +145,8 @@ public CameraDTO updateCameraDetails(Long cameraId, CameraDTO updatedCameraDTO) 
         camera.setBrand(updatedCameraDTO.getBrand());
 
         ProductDto productDto = updatedCameraDTO.getProductDto();
+        productDto.setBrand(updatedCameraDTO.getBrand());
+        productDto.setModel(updatedCameraDTO.getModel());
         productService.updateProduct(camera.getProduct().getId(), productDto);
 
         cameraRepository.save(camera);

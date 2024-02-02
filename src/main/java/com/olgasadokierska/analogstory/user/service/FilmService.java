@@ -50,6 +50,8 @@ public class FilmService {
             product.setDescription(null);
             product.setPrice(0.0);
             product.setUser(user);
+            product.setBrand(filmDTO.getBrand());
+            product.setModel(filmDTO.getModel());
             Product savedProduct = productRepository.save(product);
 
             Film film = new Film();
@@ -210,8 +212,13 @@ public FilmDTO updateFilm(Long filmId, FilmDTO updatedFilmDTO) {
         film.setModel(updatedFilmDTO.getModel());
         film.setBrand(updatedFilmDTO.getBrand());
 
+
+
         ProductDto productDto = updatedFilmDTO.getProductDto();
+        productDto.setBrand(updatedFilmDTO.getBrand());
+        productDto.setModel(updatedFilmDTO.getModel());
         productService.updateProduct(film.getProduct().getId(), productDto);
+
 
         Film updatedFilm = filmRepository.save(film);
 

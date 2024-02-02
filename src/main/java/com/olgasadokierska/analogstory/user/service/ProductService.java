@@ -6,10 +6,8 @@ import com.olgasadokierska.analogstory.user.exception.CustomException;
 import com.olgasadokierska.analogstory.user.exception.ProductNotFoundException;
 import com.olgasadokierska.analogstory.user.model.Camera;
 import com.olgasadokierska.analogstory.user.model.Film;
-import com.olgasadokierska.analogstory.user.repository.CameraRepository;
-import com.olgasadokierska.analogstory.user.repository.CartRepository;
-import com.olgasadokierska.analogstory.user.repository.FilmRepository;
-import com.olgasadokierska.analogstory.user.repository.ProductRepository;
+import com.olgasadokierska.analogstory.user.model.User;
+import com.olgasadokierska.analogstory.user.repository.*;
 import com.olgasadokierska.analogstory.user.mapper.ProductMapper;
 import com.olgasadokierska.analogstory.user.dtos.ProductDto;
 import com.olgasadokierska.analogstory.user.model.Product;
@@ -31,13 +29,23 @@ public class ProductService {
     private final CameraRepository cameraRepository;
     private final FilmRepository filmRepository;
     private final CartRepository cartRepository;
+    private final UserRepository userRepository;
 
     @Transactional
-    public ProductDto createProduct(ProductDto productDto) {
+    public ProductDto createProduct(Long userId,ProductDto productDto) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException("Użytkownik o ID " + userId + " nie istnieje", HttpStatus.NOT_FOUND));
         Product product = productMapper.toProduct(productDto);
+
+        product.setModel(productDto.getModel());
+        product.setBrand(productDto.getBrand());
+        product.setUser(user);
+
         Product savedProduct = productRepository.save(product);
         return productMapper.toProductDto(savedProduct);
     }
+
 
     @Transactional(readOnly = true)
     public List<ProductDto> getAllProducts() {
@@ -56,10 +64,6 @@ public class ProductService {
                 })
                 .map(product -> {
                     ProductDto productDto = productMapper.toProductDto(product);
-                    cameraRepository.findByProductId(product.getId()).ifPresent(camera -> {
-                        productDto.setModel(camera.getModel());
-                        productDto.setBrand(camera.getBrand());
-                    });
                     productDto.setUserId(product.getUser().getId());
                     return productDto;
                 })
@@ -85,6 +89,8 @@ public class ProductService {
                 .orElseThrow(() -> new AppException("Product with ID " + productId + " not found", HttpStatus.NOT_FOUND));
         existingProduct.setDescription(updatedProductDto.getDescription());
         existingProduct.setPrice(updatedProductDto.getPrice());
+        existingProduct.setModel(updatedProductDto.getModel());
+       existingProduct.setBrand(updatedProductDto.getBrand());
         Product updatedProduct = productRepository.save(existingProduct);
         return productMapper.toProductDto(updatedProduct);
     }
