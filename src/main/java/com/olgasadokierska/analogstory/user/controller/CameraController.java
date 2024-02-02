@@ -75,8 +75,17 @@ public class CameraController {
     }
 // usuwanie aparatu
 
-
-
+    @DeleteMapping("/deleteCamera/{cameraId}")
+    public ResponseEntity<String> deleteCameraAndProduct(@PathVariable long cameraId) {
+        try {
+            cameraService.deleteCameraAndProduct(cameraId);
+            return ResponseEntity.ok("Camera has been successfully deleted.");
+        } catch (CustomException e) {
+            return ResponseEntity.status(e.getStatus()).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while deleting the camera.");
+        }
+    }
 
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<String> handleCustomException(CustomException e) {

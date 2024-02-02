@@ -12,6 +12,7 @@ public class CameraDTO {
 
     private Long id;
     private Long userId;
+    private Long idProductu;
     private String model;
     private String brand;
     private Boolean filmLoaded;

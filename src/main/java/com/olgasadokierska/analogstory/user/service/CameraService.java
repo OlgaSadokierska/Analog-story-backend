@@ -102,34 +102,32 @@ public class CameraService {
         }
     }
 //usuwanie aparatu
-/*
-    @Transactional
-    public void deleteCamera(Long cameraId) {
-        try {
-            Camera camera = cameraRepository.findById(cameraId)
-                    .orElseThrow(() -> new CustomException("Kamera o podanym ID nie istnieje", HttpStatus.NOT_FOUND));
+@Transactional
+public void deleteCameraAndProduct(Long cameraId) {
+    try {
+        Camera camera = cameraRepository.findById(cameraId)
+                .orElseThrow(() -> new CustomException("Nie znaleziono aparat o id: " + cameraId, HttpStatus.NOT_FOUND));
 
-            Film film = filmRepository.findByCameraId(camera.getId());
-
-            if (film != null) {
-                Long filmProductId = film.getProduct().getId();
-                if (reservationRepository.existsByProductId(filmProductId)) {
-                    throw new CustomException("Nie można usunąć kamery, ponieważ istnieją powiązane rezerwacje.", HttpStatus.BAD_REQUEST);
-                }
-                productService.deleteProduct(filmProductId);
-            }
-
-            Product cameraProduct = camera.getProduct();
-            if (reservationRepository.existsByProductId(cameraProduct.getId())) {
-                throw new CustomException("Nie można usunąć kamery, ponieważ istnieją powiązane rezerwacje.", HttpStatus.BAD_REQUEST);
-            }
-
-            cameraRepository.delete(camera);
-        } catch (CustomException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new CustomException("Błąd podczas przetwarzania żądania", HttpStatus.INTERNAL_SERVER_ERROR);
+        if (camera.getFilmLoaded()) {
+            throw new CustomException("Nie można usunąć aparatu, który ma załoadowany film.", HttpStatus.FORBIDDEN);
         }
-    }*/
+
+        Product product = camera.getProduct();
+        List<Reservation> reservations = reservationRepository.findByProductId(product.getId());
+
+        if (!reservations.isEmpty()) {
+            throw new CustomException("Nie można usunąć aparatu, który jest zarezerwowany", HttpStatus.FORBIDDEN);
+        }
+
+        productRepository.deleteById(product.getId());
+
+        cameraRepository.deleteById(cameraId);
+
+    } catch (CustomException e) {
+        throw e;
+    } catch (Exception e) {
+        throw new CustomException("Błąd podczas przetwarzania żądania", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+}
 
 }
