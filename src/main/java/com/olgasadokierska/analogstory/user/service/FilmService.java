@@ -26,9 +26,10 @@ public class FilmService {
     private final FilmMapper filmMapper;
     private final ProductTypeRepository productTypeRepository;
     private final ReservationRepository reservationRepository;
+    private final ProductService productService;
 
     @Autowired
-    public FilmService(FilmRepository filmRepository, ProductRepository productRepository, UserRepository userRepository, ProductTypeRepository productTypeRepository, CameraRepository cameraRepository,FilmMapper filmMapper, ReservationRepository reservationRepository) {
+    public FilmService(FilmRepository filmRepository, ProductRepository productRepository, UserRepository userRepository, ProductTypeRepository productTypeRepository, CameraRepository cameraRepository,FilmMapper filmMapper, ReservationRepository reservationRepository, ProductService productService) {
         this.filmRepository = filmRepository;
         this.productRepository = productRepository;
         this.userRepository = userRepository;
@@ -36,6 +37,7 @@ public class FilmService {
         this.cameraRepository = cameraRepository;
         this.filmMapper = filmMapper;
         this.reservationRepository =reservationRepository;
+        this.productService = productService;
     }
 
     public List<Film> getAllFilms() {
@@ -196,6 +198,30 @@ public void deleteFilmAndProduct(long filmId) {
 
         filmRepository.deleteById(filmId);
 
+
+    } catch (CustomException e) {
+        throw e;
+    } catch (Exception e) {
+        throw new CustomException("Błąd podczas przetwarzania żądania", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+}
+
+// update kilisza
+@Transactional
+public FilmDTO updateFilm(Long filmId, FilmDTO updatedFilmDTO) {
+    try {
+        Film film = filmRepository.findById(filmId)
+                .orElseThrow(() -> new CustomException("Nie znaleziono kliszy od id: " + filmId, HttpStatus.NOT_FOUND));
+
+        film.setModel(updatedFilmDTO.getModel());
+        film.setBrand(updatedFilmDTO.getBrand());
+
+        ProductDto productDto = updatedFilmDTO.getProductDto();
+        productService.updateProduct(film.getProduct().getId(), productDto);
+
+        Film updatedFilm = filmRepository.save(film);
+
+        return filmMapper.filmToFilmDTO(updatedFilm);
 
     } catch (CustomException e) {
         throw e;

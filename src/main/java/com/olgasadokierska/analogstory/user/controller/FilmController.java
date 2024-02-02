@@ -91,5 +91,14 @@ public ResponseEntity<String> deleteFilmAndProduct(@PathVariable long filmId) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Wystąpił błąd podczas usuwania filmu.");
     }
 }
-
+//update kliszy
+@PutMapping("/updateDetails/{filmId}")
+public ResponseEntity<FilmDTO> updateFilmDetails(@PathVariable Long filmId, @RequestBody FilmDTO updatedFilmDTO) {
+    try {
+        FilmDTO updatedFilm = filmService.updateFilm(filmId, updatedFilmDTO);
+        return ResponseEntity.ok(updatedFilm);
+    } catch (CustomException e) {
+        return ResponseEntity.status(e.getStatus()).body(new FilmDTO()); // Możesz dostosować do własnych potrzeb
+    }
+}
 }

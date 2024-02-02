@@ -136,15 +136,13 @@ public CameraDTO updateCameraDetails(Long cameraId, CameraDTO updatedCameraDTO) 
         Camera camera = cameraRepository.findById(cameraId)
                 .orElseThrow(() -> new CustomException("Nie znaleziono aparatu o id: " + cameraId, HttpStatus.NOT_FOUND));
 
-        // Aktualizacja pól aparatu
+
         camera.setModel(updatedCameraDTO.getModel());
         camera.setBrand(updatedCameraDTO.getBrand());
 
-        // Aktualizacja pól produktu
         ProductDto productDto = updatedCameraDTO.getProductDto();
         productService.updateProduct(camera.getProduct().getId(), productDto);
 
-        // Zapisanie zmian
         cameraRepository.save(camera);
 
         return cameraMapper.cameraToCameraDTO(camera);

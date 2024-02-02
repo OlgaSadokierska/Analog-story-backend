@@ -16,4 +16,5 @@ public class FilmDTO {
     private String brand;
     private boolean isForSale;
     private int maxLoaded;
+    private ProductDto productDto;
 }
