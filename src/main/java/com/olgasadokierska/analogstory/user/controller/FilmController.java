@@ -4,9 +4,13 @@ import com.olgasadokierska.analogstory.user.dtos.CameraDTO;
 import com.olgasadokierska.analogstory.user.dtos.FilmDTO;
 import com.olgasadokierska.analogstory.user.dtos.ProductDto;
 import com.olgasadokierska.analogstory.user.exception.CustomException;
+import com.olgasadokierska.analogstory.user.mapper.FilmMapperImpl;
 import com.olgasadokierska.analogstory.user.model.Film;
+import com.olgasadokierska.analogstory.user.repository.UserRepository;
+import com.olgasadokierska.analogstory.user.service.CameraService;
 import com.olgasadokierska.analogstory.user.service.FilmService;
 import com.olgasadokierska.analogstory.user.service.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +27,8 @@ public class FilmController {
 
     private final UserService userService;
     private final FilmService filmService;
+    private final CameraService cameraService;
+    private final FilmMapperImpl filmMapper;
 
     @GetMapping("/films/{userId}")
     public ResponseEntity<List<Film>> getUserFilms(@PathVariable long userId) {
@@ -41,6 +47,17 @@ public class FilmController {
         }
     }
 
+    //przspiswaynie aparatu do kliszy
+    @PutMapping("/assignCamera/{filmId}/{cameraId}")
+    public ResponseEntity<FilmDTO> assignCameraToFilm(@PathVariable long filmId, @PathVariable(required = false) Long cameraId) {
+        try {
+            FilmDTO assignedFilm = filmService.assignCameraToFilm(filmId, cameraId);
+            return ResponseEntity.ok(assignedFilm);
+        } catch (CustomException e) {
+            throw new CustomException("Błąd podczas przypisywania kamery do filmu", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    // wystawianie na sprzedaż kliszy
     @PutMapping("/setForSale/{filmId}")
     public ResponseEntity<FilmDTO> setFilmForSale(@PathVariable long filmId, @RequestBody ProductDto productDto) {
         try {
@@ -50,4 +67,5 @@ public class FilmController {
             throw new CustomException("Błąd podczas ustawiania filmu na sprzedaż", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 }

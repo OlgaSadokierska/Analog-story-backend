@@ -41,4 +41,8 @@ public class Camera {
         return isForSale;
     }
 
+
+    public boolean isForSale() {
+        return isForSale;
+    }
 }

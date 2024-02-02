@@ -49,6 +49,7 @@ public class FilmService {
             User user = userRepository.findById(userId)
                     .orElseThrow(() -> new CustomException("Użytkownik o podanym ID nie istnieje", HttpStatus.NOT_FOUND));
 
+
             Product product = new Product();
             product.setProductType(productTypeRepository.getOne(2L));
             product.setDescription(null);
@@ -65,18 +66,8 @@ public class FilmService {
             film.setIsForSale(filmDTO.isForSale());
             film.setMaxLoaded(filmDTO.getMaxLoaded());
             film.setIsFull(filmDTO.isFull());
-            film.setIdCamera(filmDTO.getIdCamera());
 
             Film savedFilm = filmRepository.save(film);
-
-
-            if (filmDTO.getIdCamera() != null) {
-                Camera camera = cameraRepository.findById(filmDTO.getIdCamera())
-                        .orElseThrow(() -> new CustomException("Aparat o podanym ID nie istnieje", HttpStatus.NOT_FOUND));
-
-                camera.setFilmLoaded(true);
-                cameraRepository.save(camera);
-            }
 
             return savedFilm;
 
@@ -86,33 +77,60 @@ public class FilmService {
             throw new CustomException("Błąd podczas przetwarzania żądania", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    //przyspisywanie aparatu do kliszy
+    @Transactional
+    public FilmDTO assignCameraToFilm(long filmId, Long cameraId) {
+        try {
+            Film film = filmRepository.findById(filmId)
+                    .orElseThrow(() -> new CustomException("Film o podanym ID nie istnieje", HttpStatus.NOT_FOUND));
 
+            if (cameraId != null) {
+                Camera camera = cameraRepository.findById(cameraId)
+                        .orElseThrow(() -> new CustomException("Aparat o podanym ID nie istnieje", HttpStatus.NOT_FOUND));
+
+                if (!camera.getIsForSale()) {
+
+                    camera.setFilmLoaded(true);
+                    cameraRepository.save(camera);
+
+                    film.setIdCamera(cameraId);
+                } else {
+                    throw new CustomException("Nie można przypisać kamery do filmu, gdyż kamera jest na sprzedaż.", HttpStatus.FORBIDDEN);
+                }
+            }
+
+            Film savedFilm = filmRepository.save(film);
+
+            return filmMapper.filmToFilmDTO(savedFilm);
+
+        } catch (CustomException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new CustomException("Błąd podczas przetwarzania żądania", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    //wstawanie kliszy na sptzedaz
     @Transactional
     public FilmDTO setFilmForSale(Long filmId, ProductDto productDto) {
         try {
-            // Pobranie filmu
             Film film = filmRepository.findById(filmId)
                     .orElseThrow(() -> new RuntimeException("Film not found with id: " + filmId));
 
-            // Sprawdzenie, czy film jest załadowany do kamery
+
             if (film.getIdCamera() != null) {
                 throw new CustomException("Nie można ustawić filmu na sprzedaż. Usuń kliszę z kamery przed ustawieniem filmu na sprzedaż.", HttpStatus.FORBIDDEN);
             }
 
-            // Ustawienie isForSale na true
             film.setIsForSale(true);
 
-            // Pobranie produktu z filmu
             Product product = film.getProduct();
 
-            // Ustawienie opisu i ceny w tabeli Product z danych przekazanych w zapytaniu
             product.setDescription(productDto.getDescription());
             product.setPrice(productDto.getPrice());
 
-            // Zapisanie zmian w bazie danych
             filmRepository.save(film);
 
-            // Użycie filmMapper do konwersji Film na FilmDTO
             return filmMapper.filmToFilmDTO(film);
 
         } catch (CustomException e) {
@@ -122,6 +140,20 @@ public class FilmService {
             throw new CustomException("Błąd podczas przetwarzania żądania", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
