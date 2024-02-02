@@ -141,7 +141,39 @@ public class FilmService {
         }
     }
 
+// usuwanie przypsianego aparatu
+@Transactional
+public FilmDTO removeCameraFromFilm(long filmId) {
+    try {
+        Film film = filmRepository.findById(filmId)
+                .orElseThrow(() -> new CustomException("Film o podanym ID nie istnieje", HttpStatus.NOT_FOUND));
 
+        // Sprawdzenie, czy film ma przypisaną kamerę
+        Long cameraId = film.getIdCamera();
+        if (cameraId != null) {
+            Camera camera = cameraRepository.findById(cameraId)
+                    .orElseThrow(() -> new CustomException("Aparat o podanym ID nie istnieje", HttpStatus.NOT_FOUND));
+
+            // Ustawienie filmLoaded na false
+            camera.setFilmLoaded(false);
+            cameraRepository.save(camera);
+
+            // Usunięcie przypisanego ID kamery z filmu
+            film.setIdCamera(null);
+
+            Film savedFilm = filmRepository.save(film);
+
+            return filmMapper.filmToFilmDTO(savedFilm);
+        } else {
+            throw new CustomException("Film nie jest przypisany do żadnej kamery.", HttpStatus.BAD_REQUEST);
+        }
+
+    } catch (CustomException e) {
+        throw e;
+    } catch (Exception e) {
+        throw new CustomException("Błąd podczas przetwarzania żądania", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+}
 
 
 

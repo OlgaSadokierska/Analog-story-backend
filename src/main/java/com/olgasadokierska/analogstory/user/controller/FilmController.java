@@ -68,4 +68,15 @@ public class FilmController {
         }
     }
 
+    // uswanie przypisanego aparatu
+    @DeleteMapping("/removeCamera/{filmId}")
+    public ResponseEntity<FilmDTO> removeCameraFromFilm(@PathVariable long filmId) {
+        try {
+            FilmDTO removedFilm = filmService.removeCameraFromFilm(filmId);
+            return ResponseEntity.ok(removedFilm);
+        } catch (CustomException e) {
+            throw new CustomException("Błąd podczas usuwania przypisanej kamery do filmu", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }
