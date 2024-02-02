@@ -19,4 +19,7 @@ public class CameraDTO {
     private Boolean isForSale;
     private Long productId;
 
+
+    private ProductDto productDto;
+
 }

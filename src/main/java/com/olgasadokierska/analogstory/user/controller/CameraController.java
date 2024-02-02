@@ -79,14 +79,23 @@ public class CameraController {
     public ResponseEntity<String> deleteCameraAndProduct(@PathVariable long cameraId) {
         try {
             cameraService.deleteCameraAndProduct(cameraId);
-            return ResponseEntity.ok("Camera has been successfully deleted.");
+            return ResponseEntity.ok("Usunięto pomyślnie aparatu");
         } catch (CustomException e) {
             return ResponseEntity.status(e.getStatus()).body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while deleting the camera.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
-
+// update aparatu
+@PutMapping("/updateDetails/{cameraId}")
+public ResponseEntity<CameraDTO> updateCameraDetails(@PathVariable Long cameraId, @RequestBody CameraDTO updatedCameraDTO) {
+    try {
+        CameraDTO updatedCamera = cameraService.updateCameraDetails(cameraId, updatedCameraDTO);
+        return ResponseEntity.ok(updatedCamera);
+    } catch (CustomException e) {
+        return ResponseEntity.status(e.getStatus()).body(new CameraDTO());
+    }
+}
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<String> handleCustomException(CustomException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
