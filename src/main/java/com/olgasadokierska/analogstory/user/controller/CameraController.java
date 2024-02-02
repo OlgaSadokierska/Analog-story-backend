@@ -35,11 +35,7 @@ public class CameraController {
     private final UserService userService;
     private final CameraService cameraService;
     private final CameraMapper cameraMapper;
-    /* @GetMapping("/user/{userId}")
-     public ResponseEntity<List<Camera>> getUserCameras(@PathVariable long userId) {
-         List<Camera> cameras = userService.getUserCameras(userId);
-         return ResponseEntity.ok(cameras);
-     }*/
+
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<CameraDTO>> getUserCameras(@PathVariable long userId) {
         List<CameraDTO> cameras = userService.getUserCameras(userId)

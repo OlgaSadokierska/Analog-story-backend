@@ -68,6 +68,7 @@ public class FilmController {
         }
     }
 
+
     // uswanie przypisanego aparatu
     @DeleteMapping("/removeCamera/{filmId}")
     public ResponseEntity<FilmDTO> removeCameraFromFilm(@PathVariable long filmId) {
@@ -76,6 +77,18 @@ public class FilmController {
             return ResponseEntity.ok(removedFilm);
         } catch (CustomException e) {
             throw new CustomException("Błąd podczas usuwania przypisanej kamery do filmu", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    // usuwanie kliszy
+    @DeleteMapping("/deleteFilm/{filmId}")
+    public ResponseEntity<String> deleteFilmAndProduct(@PathVariable long filmId) {
+        try {
+            filmService.deleteFilmAndProduct(filmId);
+            return ResponseEntity.ok("Usunięto pomyślnie .");
+        } catch (CustomException e) {
+            return ResponseEntity.status(e.getStatus()).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
         }
     }
 

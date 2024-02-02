@@ -5,10 +5,7 @@ import com.olgasadokierska.analogstory.user.dtos.FilmDTO;
 import com.olgasadokierska.analogstory.user.dtos.ProductDto;
 import com.olgasadokierska.analogstory.user.exception.CustomException;
 import com.olgasadokierska.analogstory.user.mapper.FilmMapper;
-import com.olgasadokierska.analogstory.user.model.Camera;
-import com.olgasadokierska.analogstory.user.model.Film;
-import com.olgasadokierska.analogstory.user.model.Product;
-import com.olgasadokierska.analogstory.user.model.User;
+import com.olgasadokierska.analogstory.user.model.*;
 import com.olgasadokierska.analogstory.user.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,15 +25,17 @@ public class FilmService {
     private final CameraRepository cameraRepository;
     private final FilmMapper filmMapper;
     private final ProductTypeRepository productTypeRepository;
+    private final ReservationRepository reservationRepository;
 
     @Autowired
-    public FilmService(FilmRepository filmRepository, ProductRepository productRepository, UserRepository userRepository, ProductTypeRepository productTypeRepository, CameraRepository cameraRepository,FilmMapper filmMapper) {
+    public FilmService(FilmRepository filmRepository, ProductRepository productRepository, UserRepository userRepository, ProductTypeRepository productTypeRepository, CameraRepository cameraRepository,FilmMapper filmMapper, ReservationRepository reservationRepository) {
         this.filmRepository = filmRepository;
         this.productRepository = productRepository;
         this.userRepository = userRepository;
         this.productTypeRepository = productTypeRepository;
         this.cameraRepository = cameraRepository;
         this.filmMapper = filmMapper;
+        this.reservationRepository =reservationRepository;
     }
 
     public List<Film> getAllFilms() {
@@ -148,17 +147,16 @@ public FilmDTO removeCameraFromFilm(long filmId) {
         Film film = filmRepository.findById(filmId)
                 .orElseThrow(() -> new CustomException("Film o podanym ID nie istnieje", HttpStatus.NOT_FOUND));
 
-        // Sprawdzenie, czy film ma przypisaną kamerę
+
         Long cameraId = film.getIdCamera();
         if (cameraId != null) {
             Camera camera = cameraRepository.findById(cameraId)
                     .orElseThrow(() -> new CustomException("Aparat o podanym ID nie istnieje", HttpStatus.NOT_FOUND));
 
-            // Ustawienie filmLoaded na false
+
             camera.setFilmLoaded(false);
             cameraRepository.save(camera);
 
-            // Usunięcie przypisanego ID kamery z filmu
             film.setIdCamera(null);
 
             Film savedFilm = filmRepository.save(film);
@@ -174,7 +172,35 @@ public FilmDTO removeCameraFromFilm(long filmId) {
         throw new CustomException("Błąd podczas przetwarzania żądania", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
+// usuwanie kliszy
+@Transactional
+public void deleteFilmAndProduct(long filmId) {
+    try {
+        Film film = filmRepository.findById(filmId)
+                .orElseThrow(() -> new CustomException("Film o podanym ID nie istnieje", HttpStatus.NOT_FOUND));
 
+        if (film.getIdCamera() != null) {
+            throw new CustomException("Nie można usunąć filmu przypisanego do aparatu.", HttpStatus.BAD_REQUEST);
+        }
+
+        if (film.getProduct() != null) {
+            Long productId = film.getProduct().getId();
+
+            List<Reservation> reservations = reservationRepository.findByProductId(productId);
+            if (!reservations.isEmpty()) {
+                throw new CustomException("Nie można usunąć filmu, ponieważ istnieją powiązane rezerwacje.", HttpStatus.BAD_REQUEST);
+            }
+            productRepository.deleteById(productId);
+        }
+
+        filmRepository.deleteById(filmId);
+
+    } catch (CustomException e) {
+        throw e;
+    } catch (Exception e) {
+        throw new CustomException("Błąd podczas przetwarzania żądania", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+}
 
 
 
