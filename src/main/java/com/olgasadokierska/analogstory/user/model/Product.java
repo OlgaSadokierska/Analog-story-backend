@@ -27,4 +27,8 @@ public class Product {
     @JoinColumn(name = "user_id")
     private User user;
 
+    private String model;
+
+    private String brand;
+
 }

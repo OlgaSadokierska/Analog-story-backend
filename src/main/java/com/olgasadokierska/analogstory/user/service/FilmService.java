@@ -4,10 +4,12 @@ import com.olgasadokierska.analogstory.user.dtos.CameraDTO;
 import com.olgasadokierska.analogstory.user.dtos.FilmDTO;
 import com.olgasadokierska.analogstory.user.dtos.ProductDto;
 import com.olgasadokierska.analogstory.user.exception.CustomException;
+import com.olgasadokierska.analogstory.user.mapper.CameraMapper;
 import com.olgasadokierska.analogstory.user.mapper.FilmMapper;
 import com.olgasadokierska.analogstory.user.model.*;
 import com.olgasadokierska.analogstory.user.repository.*;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class FilmService {
     private final FilmRepository filmRepository;
     private final ProductRepository productRepository;
@@ -27,18 +30,9 @@ public class FilmService {
     private final ProductTypeRepository productTypeRepository;
     private final ReservationRepository reservationRepository;
     private final ProductService productService;
+    private final CartRepository cartRepository;
+    private final CameraMapper cameraMapper;
 
-    @Autowired
-    public FilmService(FilmRepository filmRepository, ProductRepository productRepository, UserRepository userRepository, ProductTypeRepository productTypeRepository, CameraRepository cameraRepository,FilmMapper filmMapper, ReservationRepository reservationRepository, ProductService productService) {
-        this.filmRepository = filmRepository;
-        this.productRepository = productRepository;
-        this.userRepository = userRepository;
-        this.productTypeRepository = productTypeRepository;
-        this.cameraRepository = cameraRepository;
-        this.filmMapper = filmMapper;
-        this.reservationRepository =reservationRepository;
-        this.productService = productService;
-    }
 
     public List<Film> getAllFilms() {
         return filmRepository.findAll();

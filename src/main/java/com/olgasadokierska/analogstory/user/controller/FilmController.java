@@ -14,6 +14,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -23,6 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/films")
 @CrossOrigin(origins = "http://localhost:3000")
+
 public class FilmController {
 
     private final UserService userService;
@@ -98,7 +100,9 @@ public ResponseEntity<FilmDTO> updateFilmDetails(@PathVariable Long filmId, @Req
         FilmDTO updatedFilm = filmService.updateFilm(filmId, updatedFilmDTO);
         return ResponseEntity.ok(updatedFilm);
     } catch (CustomException e) {
-        return ResponseEntity.status(e.getStatus()).body(new FilmDTO()); // Możesz dostosować do własnych potrzeb
+        return ResponseEntity.status(e.getStatus()).body(new FilmDTO());
     }
 }
+
+
 }

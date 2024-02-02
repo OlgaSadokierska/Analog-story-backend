@@ -28,6 +28,7 @@ public class CameraService {
     private final FilmRepository filmRepository;
     private final ReservationRepository reservationRepository;
     private final ProductService productService;
+    private final CartRepository cartRepository;
 
     public List<Camera> getAllCameras() {
         return cameraRepository.findAll();
@@ -78,7 +79,7 @@ public class CameraService {
         try {
 
             Camera camera = cameraRepository.findById(cameraId)
-                    .orElseThrow(() -> new RuntimeException("Camera not found with id: " + cameraId));
+                    .orElseThrow(() -> new RuntimeException("Nie znaleziono aparatu od id: " + cameraId));
 
             if (camera.getFilmLoaded()) {
                 throw new CustomException("Załadowany film. Usuń go przed ustawieniem kamery na sprzedaż.", HttpStatus.BAD_REQUEST);
@@ -153,6 +154,8 @@ public CameraDTO updateCameraDetails(Long cameraId, CameraDTO updatedCameraDTO) 
         throw new CustomException("Błąd podczas przetwarzania żądania", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
+
+
 
 
 

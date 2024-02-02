@@ -96,6 +96,7 @@ public ResponseEntity<CameraDTO> updateCameraDetails(@PathVariable Long cameraId
         return ResponseEntity.status(e.getStatus()).body(new CameraDTO());
     }
 }
+
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<String> handleCustomException(CustomException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
