@@ -79,17 +79,17 @@ public class FilmController {
             throw new CustomException("Błąd podczas usuwania przypisanej kamery do filmu", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    // usuwanie kliszy
-    @DeleteMapping("/deleteFilm/{filmId}")
-    public ResponseEntity<String> deleteFilmAndProduct(@PathVariable long filmId) {
-        try {
-            filmService.deleteFilmAndProduct(filmId);
-            return ResponseEntity.ok("Usunięto pomyślnie .");
-        } catch (CustomException e) {
-            return ResponseEntity.status(e.getStatus()).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
-        }
+// usuwanie kliszy
+@DeleteMapping("/deleteFilm/{filmId}")
+public ResponseEntity<String> deleteFilmAndProduct(@PathVariable long filmId) {
+    try {
+        filmService.deleteFilmAndProduct(filmId);
+        return ResponseEntity.ok("Film został pomyślnie usunięty.");
+    } catch (CustomException e) {
+        return ResponseEntity.status(e.getStatus()).body(e.getMessage());
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Wystąpił błąd podczas usuwania filmu.");
     }
+}
 
 }

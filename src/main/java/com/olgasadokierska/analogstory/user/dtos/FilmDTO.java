@@ -9,6 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 public class FilmDTO {
     private Long idCamera;
+    private Long idProductu;
     private int loadedFrames;
     private boolean isFull;
     private String model;

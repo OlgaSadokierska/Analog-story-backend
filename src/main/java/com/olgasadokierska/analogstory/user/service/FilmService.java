@@ -172,28 +172,30 @@ public FilmDTO removeCameraFromFilm(long filmId) {
         throw new CustomException("Błąd podczas przetwarzania żądania", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
-// usuwanie kliszy
+// uswanie kliszy
 @Transactional
 public void deleteFilmAndProduct(long filmId) {
     try {
         Film film = filmRepository.findById(filmId)
                 .orElseThrow(() -> new CustomException("Film o podanym ID nie istnieje", HttpStatus.NOT_FOUND));
 
+
         if (film.getIdCamera() != null) {
-            throw new CustomException("Nie można usunąć filmu przypisanego do aparatu.", HttpStatus.BAD_REQUEST);
+            throw new CustomException("Nie można usunąć filmu, który jest przypisany do kamery.", HttpStatus.FORBIDDEN);
         }
 
-        if (film.getProduct() != null) {
-            Long productId = film.getProduct().getId();
 
-            List<Reservation> reservations = reservationRepository.findByProductId(productId);
-            if (!reservations.isEmpty()) {
-                throw new CustomException("Nie można usunąć filmu, ponieważ istnieją powiązane rezerwacje.", HttpStatus.BAD_REQUEST);
-            }
-            productRepository.deleteById(productId);
+        Product product = film.getProduct();
+        List<Reservation> reservations = reservationRepository.findByProductId(product.getId());
+
+        if (!reservations.isEmpty()) {
+            throw new CustomException("Nie można usunąć filmu, który jest zarezerwowany.", HttpStatus.FORBIDDEN);
         }
+
+        productRepository.deleteById(product.getId());
 
         filmRepository.deleteById(filmId);
+
 
     } catch (CustomException e) {
         throw e;
@@ -207,13 +209,20 @@ public void deleteFilmAndProduct(long filmId) {
 
 
 
-
-
-
-
-
-
-
-
-
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -25,6 +25,9 @@ public class CameraService {
     private final ProductTypeRepository productTypeRepository;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
+    private final FilmRepository filmRepository;
+    private final ReservationRepository reservationRepository;
+    private final ProductService productService;
 
     public List<Camera> getAllCameras() {
         return cameraRepository.findAll();
@@ -45,11 +48,10 @@ public class CameraService {
     @Transactional
     public CameraDTO addCamera(Long userId, CameraDTO cameraDTO) {
 
-        // Sprawdzenie, czy użytkownik istnieje
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException("Użytkownik o ID " + userId + " nie istnieje", HttpStatus.NOT_FOUND));
 
-        // Utworzenie nowego produktu
         Product product = new Product();
         product.setProductType(productTypeRepository.getOne(1L)); // Ustawienie odpowiedniego productTypeId (1L w tym przypadku)
         product.setDescription(null);  // Ustawienie opisu na null
@@ -57,20 +59,16 @@ public class CameraService {
         product.setUser(user);
         Product savedProduct = productRepository.save(product);
 
-
-        // Utworzenie kamery
         Camera camera = new Camera();
         camera.setUser(user);
         camera.setModel(cameraDTO.getModel());
         camera.setBrand(cameraDTO.getBrand());
         camera.setFilmLoaded(false);
         camera.setIsForSale(false);
-        camera.setProduct(savedProduct); // Przypisanie produktu do kamery
+        camera.setProduct(savedProduct);
 
-        // Zapisanie kamery
         Camera savedCamera = cameraRepository.save(camera);
 
-        // Mapowanie zapisanej kamery na DTO i zwrócenie odpowiedzi
         return cameraMapper.cameraToCameraDTO(savedCamera);
 
     }
@@ -78,26 +76,21 @@ public class CameraService {
     @Transactional
     public CameraDTO setCameraForSale(Long cameraId, ProductDto productDto) {
         try {
-            // Pobranie kamery
+
             Camera camera = cameraRepository.findById(cameraId)
                     .orElseThrow(() -> new RuntimeException("Camera not found with id: " + cameraId));
 
-            // Sprawdzenie, czy film jest załadowany
             if (camera.getFilmLoaded()) {
                 throw new CustomException("Załadowany film. Usuń go przed ustawieniem kamery na sprzedaż.", HttpStatus.BAD_REQUEST);
             }
 
-            // Pobranie produktu z kamery
             Product product = camera.getProduct();
 
-            // Ustawienie isForSale na true
             camera.setIsForSale(true);
 
-            // Ustawienie opisu i ceny w tabeli Product z danych przekazanych w zapytaniu
             product.setDescription(productDto.getDescription());
             product.setPrice(productDto.getPrice());
 
-            // Zapisanie zmian w bazie danych
             cameraRepository.save(camera);
 
             return cameraMapper.cameraToCameraDTO(camera);
@@ -108,5 +101,35 @@ public class CameraService {
             throw new CustomException("Błąd podczas przetwarzania żądania", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+//usuwanie aparatu
+/*
+    @Transactional
+    public void deleteCamera(Long cameraId) {
+        try {
+            Camera camera = cameraRepository.findById(cameraId)
+                    .orElseThrow(() -> new CustomException("Kamera o podanym ID nie istnieje", HttpStatus.NOT_FOUND));
+
+            Film film = filmRepository.findByCameraId(camera.getId());
+
+            if (film != null) {
+                Long filmProductId = film.getProduct().getId();
+                if (reservationRepository.existsByProductId(filmProductId)) {
+                    throw new CustomException("Nie można usunąć kamery, ponieważ istnieją powiązane rezerwacje.", HttpStatus.BAD_REQUEST);
+                }
+                productService.deleteProduct(filmProductId);
+            }
+
+            Product cameraProduct = camera.getProduct();
+            if (reservationRepository.existsByProductId(cameraProduct.getId())) {
+                throw new CustomException("Nie można usunąć kamery, ponieważ istnieją powiązane rezerwacje.", HttpStatus.BAD_REQUEST);
+            }
+
+            cameraRepository.delete(camera);
+        } catch (CustomException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new CustomException("Błąd podczas przetwarzania żądania", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }*/
 
 }
