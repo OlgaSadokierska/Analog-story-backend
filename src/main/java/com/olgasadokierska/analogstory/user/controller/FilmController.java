@@ -39,10 +39,9 @@ public class FilmController {
     }
 
     @PostMapping("/add/{userId}")
-    public ResponseEntity<Film> addFilm(@PathVariable long userId, @RequestBody FilmDTO filmDTO,
-                                        @RequestBody(required = false) CameraDTO cameraDTO) {
+    public ResponseEntity<Film> addFilm(@PathVariable long userId, @RequestBody FilmDTO filmDTO) {
         try {
-            Film addedFilm = filmService.addFilm(userId, filmDTO, cameraDTO);
+            Film addedFilm = filmService.addFilm(userId, filmDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(addedFilm);
         } catch (CustomException e) {
             throw new CustomException("Błąd podczas dodawania kliszy", HttpStatus.INTERNAL_SERVER_ERROR);
