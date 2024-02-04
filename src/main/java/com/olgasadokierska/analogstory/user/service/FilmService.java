@@ -211,6 +211,8 @@ public FilmDTO updateFilm(Long filmId, FilmDTO updatedFilmDTO) {
 
         film.setModel(updatedFilmDTO.getModel());
         film.setBrand(updatedFilmDTO.getBrand());
+        film.setLoadedFrames(updatedFilmDTO.getLoadedFrames());
+        film.setMaxLoaded(updatedFilmDTO.getMaxLoaded());
 
         ProductDto productDto = updatedFilmDTO.getProductDto();
         productDto.setBrand(updatedFilmDTO.getBrand());
