@@ -26,6 +26,6 @@ public class Cart {
     private Boolean isPurchased;
 
     public Cart() {
-        this.isPurchased = false; // Default value
+        this.isPurchased = false;
     }
 }

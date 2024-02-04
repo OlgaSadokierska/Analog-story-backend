@@ -35,11 +35,7 @@ public class CameraController {
     private final UserService userService;
     private final CameraService cameraService;
     private final CameraMapper cameraMapper;
-    /* @GetMapping("/user/{userId}")
-     public ResponseEntity<List<Camera>> getUserCameras(@PathVariable long userId) {
-         List<Camera> cameras = userService.getUserCameras(userId);
-         return ResponseEntity.ok(cameras);
-     }*/
+
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<CameraDTO>> getUserCameras(@PathVariable long userId) {
         List<CameraDTO> cameras = userService.getUserCameras(userId)
@@ -57,7 +53,7 @@ public class CameraController {
 
 
 
-    //dodawanie aparatu
+
     @PostMapping("/add/{userId}")
     public ResponseEntity<CameraDTO> addCamera(@PathVariable Long userId, @RequestBody CameraDTO cameraDTO) {
         try {
@@ -67,7 +63,7 @@ public class CameraController {
             throw new CustomException("Błąd podczas dodawania kamery", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    // wysatwainie na sprzedaz kamery
+
     @PutMapping("/setForSale/{cameraId}")
     public ResponseEntity<String> setCameraForSale(@PathVariable Long cameraId, @RequestBody ProductDto productDto) {
         try {
@@ -79,7 +75,27 @@ public class CameraController {
     }
 
 
+    @DeleteMapping("/deleteCamera/{cameraId}")
+    public ResponseEntity<String> deleteCameraAndProduct(@PathVariable long cameraId) {
+        try {
+            cameraService.deleteCameraAndProduct(cameraId);
+            return ResponseEntity.ok("Usunięto pomyślnie aparatu");
+        } catch (CustomException e) {
+            return ResponseEntity.status(e.getStatus()).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
 
+@PutMapping("/updateDetails/{cameraId}")
+public ResponseEntity<CameraDTO> updateCameraDetails(@PathVariable Long cameraId, @RequestBody CameraDTO updatedCameraDTO) {
+    try {
+        CameraDTO updatedCamera = cameraService.updateCameraDetails(cameraId, updatedCameraDTO);
+        return ResponseEntity.ok(updatedCamera);
+    } catch (CustomException e) {
+        return ResponseEntity.status(e.getStatus()).body(new CameraDTO());
+    }
+}
 
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<String> handleCustomException(CustomException e) {

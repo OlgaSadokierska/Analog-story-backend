@@ -25,6 +25,10 @@ public class CameraService {
     private final ProductTypeRepository productTypeRepository;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
+    private final FilmRepository filmRepository;
+    private final ReservationRepository reservationRepository;
+    private final ProductService productService;
+    private final CartRepository cartRepository;
 
     public List<Camera> getAllCameras() {
         return cameraRepository.findAll();
@@ -41,34 +45,32 @@ public class CameraService {
         return cameraMapper.cameraToCameraDTO(camera);
     }
 
-    //dodawanie aparatu
+
     @Transactional
     public CameraDTO addCamera(Long userId, CameraDTO cameraDTO) {
 
-        // Sprawdzenie, czy użytkownik istnieje
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException("Użytkownik o ID " + userId + " nie istnieje", HttpStatus.NOT_FOUND));
 
-        // Utworzenie nowego produktu
         Product product = new Product();
-        product.setProductType(productTypeRepository.getOne(1L)); // Ustawienie odpowiedniego productTypeId (1L w tym przypadku)
-        product.setDescription(null);  // Ustawienie opisu na null
-        product.setPrice(0.0);  // Ustawienie ceny na null
+        product.setDescription(null);
+        product.setPrice(0.0);
+        product.setUser(user);
+        product.setModel(cameraDTO.getModel());
+        product.setBrand(cameraDTO.getBrand());
         Product savedProduct = productRepository.save(product);
 
-        // Utworzenie kamery
         Camera camera = new Camera();
         camera.setUser(user);
         camera.setModel(cameraDTO.getModel());
         camera.setBrand(cameraDTO.getBrand());
         camera.setFilmLoaded(false);
         camera.setIsForSale(false);
-        camera.setProduct(savedProduct); // Przypisanie produktu do kamery
+        camera.setProduct(savedProduct);
 
-        // Zapisanie kamery
         Camera savedCamera = cameraRepository.save(camera);
 
-        // Mapowanie zapisanej kamery na DTO i zwrócenie odpowiedzi
         return cameraMapper.cameraToCameraDTO(savedCamera);
 
     }
@@ -76,26 +78,22 @@ public class CameraService {
     @Transactional
     public CameraDTO setCameraForSale(Long cameraId, ProductDto productDto) {
         try {
-            // Pobranie kamery
-            Camera camera = cameraRepository.findById(cameraId)
-                    .orElseThrow(() -> new RuntimeException("Camera not found with id: " + cameraId));
 
-            // Sprawdzenie, czy film jest załadowany
+            Camera camera = cameraRepository.findById(cameraId)
+                    .orElseThrow(() -> new RuntimeException("Nie znaleziono aparatu od id: " + cameraId));
+
             if (camera.getFilmLoaded()) {
                 throw new CustomException("Załadowany film. Usuń go przed ustawieniem kamery na sprzedaż.", HttpStatus.BAD_REQUEST);
             }
 
-            // Pobranie produktu z kamery
             Product product = camera.getProduct();
 
-            // Ustawienie isForSale na true
             camera.setIsForSale(true);
 
-            // Ustawienie opisu i ceny w tabeli Product z danych przekazanych w zapytaniu
             product.setDescription(productDto.getDescription());
             product.setPrice(productDto.getPrice());
 
-            // Zapisanie zmian w bazie danych
+
             cameraRepository.save(camera);
 
             return cameraMapper.cameraToCameraDTO(camera);
@@ -106,5 +104,88 @@ public class CameraService {
             throw new CustomException("Błąd podczas przetwarzania żądania", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+//usuwanie aparatu
+@Transactional
+public void deleteCameraAndProduct(Long cameraId) {
+    try {
+        Camera camera = cameraRepository.findById(cameraId)
+                .orElseThrow(() -> new CustomException("Nie znaleziono aparat o id: " + cameraId, HttpStatus.NOT_FOUND));
+
+        if (camera.getFilmLoaded()) {
+            throw new CustomException("Nie można usunąć aparatu, który ma załoadowany film.", HttpStatus.FORBIDDEN);
+        }
+
+        Product product = camera.getProduct();
+        List<Reservation> reservations = reservationRepository.findByProductId(product.getId());
+
+        if (!reservations.isEmpty()) {
+            throw new CustomException("Nie można usunąć aparatu, który jest zarezerwowany", HttpStatus.FORBIDDEN);
+        }
+
+        productRepository.deleteById(product.getId());
+
+        cameraRepository.deleteById(cameraId);
+
+    } catch (CustomException e) {
+        throw e;
+    } catch (Exception e) {
+        throw new CustomException("Błąd podczas przetwarzania żądania", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+}
+// update aparatu
+@Transactional
+public CameraDTO updateCameraDetails(Long cameraId, CameraDTO updatedCameraDTO) {
+    try {
+        Camera camera = cameraRepository.findById(cameraId)
+                .orElseThrow(() -> new CustomException("Nie znaleziono aparatu o id: " + cameraId, HttpStatus.NOT_FOUND));
+
+
+        camera.setModel(updatedCameraDTO.getModel());
+        camera.setBrand(updatedCameraDTO.getBrand());
+
+
+        ProductDto existingProductDto = updatedCameraDTO.getProductDto().orElse(null);
+
+        if (existingProductDto != null) {
+
+            ProductDto productDto = new ProductDto();
+            productDto.setBrand(updatedCameraDTO.getBrand());
+            productDto.setModel(updatedCameraDTO.getModel());
+
+            // Ustaw opis tylko, jeśli jest podany w zaktualizowanym ProductDto
+            if (existingProductDto.getDescription() != null) {
+                productDto.setDescription(existingProductDto.getDescription());
+            } else {
+                productDto.setDescription(camera.getProduct().getDescription());
+            }
+
+            // Ustaw cenę tylko, jeśli jest podana w zaktualizowanym ProductDto
+            if (existingProductDto.getPrice() != 0.0) {
+                productDto.setPrice(existingProductDto.getPrice());
+            } else {
+                productDto.setPrice(camera.getProduct().getPrice());
+            }
+
+            productService.updateProduct(camera.getProduct().getId(), productDto);
+        }
+
+        // Zapisz zmiany w bazie danych
+        cameraRepository.save(camera);
+
+        return cameraMapper.cameraToCameraDTO(camera);
+
+    } catch (CustomException e) {
+        throw e;
+    } catch (Exception e) {
+        throw new CustomException("Błąd podczas przetwarzania żądania", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+}
+
+
+
+
+
+
 
 }
+

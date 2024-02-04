@@ -1,6 +1,8 @@
 package com.olgasadokierska.analogstory.user.dtos;
 import lombok.*;
 
+import java.util.Optional;
+
 @Data
 @Builder
 @Getter
@@ -9,6 +11,12 @@ import lombok.*;
 @NoArgsConstructor
 public class FilmDTO {
     private Long idCamera;
+    private Long idProductu;
     private int loadedFrames;
     private boolean isFull;
+    private String model;
+    private String brand;
+    private boolean isForSale;
+    private int maxLoaded;
+    private Optional<ProductDto> productDto;
 }
