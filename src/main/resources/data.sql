@@ -31,8 +31,6 @@ VALUES
     ('Grzegorz', 'Lis', 'grzegorz.lis@example.com', 'grzegorz.lis', '$2a$10$wJMFIFRYj2CvTktsvQj8buq10R79AJe0wr9zHHksuoGUgzTb0M8Jq', '987321654', 3);
 -- insert ProductType
 INSERT INTO product_type (name_type_product) VALUES
-    ('Camera'),
-    ('Film'),
     ('Lens'),
     ('Trivet'),
     ('Case'),

@@ -54,7 +54,6 @@ public class CameraService {
                 .orElseThrow(() -> new CustomException("Użytkownik o ID " + userId + " nie istnieje", HttpStatus.NOT_FOUND));
 
         Product product = new Product();
-        product.setProductType(productTypeRepository.getOne(1L)); // Ustawienie odpowiedniego productTypeId (1L w tym przypadku)
         product.setDescription(null);  // Ustawienie opisu na null
         product.setPrice(0.0);  // Ustawienie ceny na null
         product.setUser(user);

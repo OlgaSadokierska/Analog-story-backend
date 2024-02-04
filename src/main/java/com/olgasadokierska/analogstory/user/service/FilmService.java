@@ -46,7 +46,7 @@ public class FilmService {
 
 
             Product product = new Product();
-            product.setProductType(productTypeRepository.getOne(2L));
+
             product.setDescription(null);
             product.setPrice(0.0);
             product.setUser(user);
@@ -259,7 +259,7 @@ public FilmDTO updateFilm(Long filmId, FilmDTO updatedFilmDTO) {
                     productDto.setDescription(film.getProduct().getDescription());
                 }
 
-                // Ustaw cenę tylko, jeśli jest podana w zaktualizowanym ProductDto
+
                 if (existingProductDto.getPrice() != 0.0) {
                     productDto.setPrice(existingProductDto.getPrice());
                 } else {
