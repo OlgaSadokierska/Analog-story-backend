@@ -212,8 +212,6 @@ public FilmDTO updateFilm(Long filmId, FilmDTO updatedFilmDTO) {
         film.setModel(updatedFilmDTO.getModel());
         film.setBrand(updatedFilmDTO.getBrand());
 
-
-
         ProductDto productDto = updatedFilmDTO.getProductDto();
         productDto.setBrand(updatedFilmDTO.getBrand());
         productDto.setModel(updatedFilmDTO.getModel());

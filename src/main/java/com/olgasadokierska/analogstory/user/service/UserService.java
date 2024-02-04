@@ -7,6 +7,7 @@ import com.olgasadokierska.analogstory.user.mapper.UserMapper;
 import com.olgasadokierska.analogstory.user.model.*;
 import com.olgasadokierska.analogstory.user.repository.CameraRepository;
 import com.olgasadokierska.analogstory.user.repository.FilmRepository;
+import com.olgasadokierska.analogstory.user.repository.ReservationRepository;
 import com.olgasadokierska.analogstory.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +28,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final CameraRepository cameraRepository;
     private final FilmRepository filmRepository;
+    private final ReservationRepository reservationRepository;
 
     public UserDto register(SignUpDto signUpDto) {
         String login = signUpDto.getLogin();
@@ -103,31 +106,26 @@ public class UserService {
         }
     }
 
+
     public UserMediaDTO getUserMedia(Long userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
 
-            List<Camera> kamery = cameraRepository.findByUser(user);
-            List<Film> filmy = filmRepository.findByUser(user);
-
-            for (Camera camera : kamery) {
-                Product product = camera.getProduct();
-                if (product != null) {
-                    System.out.println("Informacje o produkcie dla kamery " + camera.getId() + ": " + product.getDescription() + ", Cena: " + product.getPrice());
-                }
-            }
-
-            for (Film film : filmy) {
-                Product product = film.getProduct();
-                if (product != null) {
-                    System.out.println("Informacje o produkcie dla filmu " + film.getId() + ": " + product.getDescription() + ", Cena: " + product.getPrice());
-                }
-            }
+            List<Camera> availableCameras = cameraRepository.findByUser(user);
+            List<Film> availableFilms = filmRepository.findByUser(user);
 
             UserMediaDTO userMediaDTO = new UserMediaDTO();
-            userMediaDTO.setCameras(kamery);
-            userMediaDTO.setFilms(filmy);
+
+            userMediaDTO.setCameras(availableCameras.stream()
+                    .filter(camera -> !reservationRepository.existsByProductId(camera.getProduct().getId()))
+                    .collect(Collectors.toList()));
+
+
+            userMediaDTO.setFilms(availableFilms.stream()
+                    .filter(film -> !reservationRepository.existsByProductId(film.getProduct().getId()))
+                    .collect(Collectors.toList()));
+
             return userMediaDTO;
         } else {
             throw new UserNotFoundException("Użytkownik o ID " + userId + " nie istnieje");

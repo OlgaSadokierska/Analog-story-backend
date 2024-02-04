@@ -30,7 +30,7 @@ public class ProductService {
     private final FilmRepository filmRepository;
     private final CartRepository cartRepository;
     private final UserRepository userRepository;
-
+    private final ReservationRepository reservationRepository;
     @Transactional
     public ProductDto createProduct(Long userId,ProductDto productDto) {
 
@@ -44,6 +44,7 @@ public class ProductService {
 
         Product savedProduct = productRepository.save(product);
         return productMapper.toProductDto(savedProduct);
+
     }
 
 
@@ -60,7 +61,9 @@ public class ProductService {
                                     .map(Film::getIsForSale)
                                     .orElse(false);
                     boolean isProductInCart = cartRepository.existsByProductId(product.getId());
-                    return isCameraForSale && isFilmForSale && !isProductInCart;
+                    boolean isProductInReservations = reservationRepository.existsByProductId(product.getId());
+
+                    return isCameraForSale && isFilmForSale && !isProductInCart && !isProductInReservations;
                 })
                 .map(product -> {
                     ProductDto productDto = productMapper.toProductDto(product);
