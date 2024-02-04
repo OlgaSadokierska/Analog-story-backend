@@ -10,6 +10,8 @@ import com.olgasadokierska.analogstory.user.model.*;
 import com.olgasadokierska.analogstory.user.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,15 +36,17 @@ public class FilmService {
     private final CameraMapper cameraMapper;
 
 
+
+
     public List<Film> getAllFilms() {
         return filmRepository.findAll();
     }
     @Transactional
-    public Film addFilm(long userId, FilmDTO filmDTO, CameraDTO cameraDTO) {
+    public Film addFilm(long userId, FilmDTO filmDTO) {
+
         try {
             User user = userRepository.findById(userId)
                     .orElseThrow(() -> new CustomException("Użytkownik o podanym ID nie istnieje", HttpStatus.NOT_FOUND));
-
 
             Product product = new Product();
 
@@ -59,11 +63,12 @@ public class FilmService {
             film.setModel(filmDTO.getModel());
             film.setBrand(filmDTO.getBrand());
             film.setLoadedFrames(filmDTO.getLoadedFrames());
-            film.setIsForSale(filmDTO.isForSale());
+            film.setIsForSale(filmDTO.getIsForSale());
             film.setMaxLoaded(filmDTO.getMaxLoaded());
-            film.setIsFull(filmDTO.isFull());
+            film.setIsFull(filmDTO.getIsFull());
 
             Film savedFilm = filmRepository.save(film);
+
 
             return savedFilm;
 
@@ -111,7 +116,6 @@ public class FilmService {
         try {
             Film film = filmRepository.findById(filmId)
                     .orElseThrow(() -> new RuntimeException("Film not found with id: " + filmId));
-
 
             if (film.getIdCamera() != null) {
                 throw new CustomException("Nie można ustawić filmu na sprzedaż. Usuń kliszę z kamery przed ustawieniem filmu na sprzedaż.", HttpStatus.FORBIDDEN);

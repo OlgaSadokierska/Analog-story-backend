@@ -13,10 +13,10 @@ public class FilmDTO {
     private Long idCamera;
     private Long idProductu;
     private int loadedFrames;
-    private boolean isFull;
+    private Boolean isFull;
     private String model;
     private String brand;
-    private boolean isForSale;
+    private Boolean isForSale;
     private int maxLoaded;
     private Optional<ProductDto> productDto;
 }
