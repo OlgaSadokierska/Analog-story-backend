@@ -1,6 +1,8 @@
 package com.olgasadokierska.analogstory.user.dtos;
 import lombok.*;
 
+import java.util.Optional;
+
 @Data
 @Builder
 @Getter
@@ -16,5 +18,5 @@ public class FilmDTO {
     private String brand;
     private boolean isForSale;
     private int maxLoaded;
-    private ProductDto productDto;
+    private Optional<ProductDto> productDto;
 }

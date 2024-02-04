@@ -2,6 +2,8 @@ package com.olgasadokierska.analogstory.user.dtos;
 
 import lombok.*;
 
+import java.util.Optional;
+
 @Data
 @Builder
 @Getter
@@ -20,6 +22,6 @@ public class CameraDTO {
     private Long productId;
 
 
-    private ProductDto productDto;
+    private Optional<ProductDto> productDto;
 
 }

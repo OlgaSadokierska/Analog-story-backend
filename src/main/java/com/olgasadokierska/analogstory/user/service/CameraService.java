@@ -140,15 +140,37 @@ public CameraDTO updateCameraDetails(Long cameraId, CameraDTO updatedCameraDTO) 
         Camera camera = cameraRepository.findById(cameraId)
                 .orElseThrow(() -> new CustomException("Nie znaleziono aparatu o id: " + cameraId, HttpStatus.NOT_FOUND));
 
-
+        // Aktualizuj pola kamery
         camera.setModel(updatedCameraDTO.getModel());
         camera.setBrand(updatedCameraDTO.getBrand());
 
-        ProductDto productDto = updatedCameraDTO.getProductDto();
-        productDto.setBrand(updatedCameraDTO.getBrand());
-        productDto.setModel(updatedCameraDTO.getModel());
-        productService.updateProduct(camera.getProduct().getId(), productDto);
+        // Pobierz ProductDto z CameraDTO
+        ProductDto existingProductDto = updatedCameraDTO.getProductDto().orElse(null);
 
+        if (existingProductDto != null) {
+            // Jeśli ProductDto jest dostępny, zaktualizuj produkt związany z kamerą
+            ProductDto productDto = new ProductDto();
+            productDto.setBrand(updatedCameraDTO.getBrand());
+            productDto.setModel(updatedCameraDTO.getModel());
+
+            // Ustaw opis tylko, jeśli jest podany w zaktualizowanym ProductDto
+            if (existingProductDto.getDescription() != null) {
+                productDto.setDescription(existingProductDto.getDescription());
+            } else {
+                productDto.setDescription(camera.getProduct().getDescription());
+            }
+
+            // Ustaw cenę tylko, jeśli jest podana w zaktualizowanym ProductDto
+            if (existingProductDto.getPrice() != 0.0) {
+                productDto.setPrice(existingProductDto.getPrice());
+            } else {
+                productDto.setPrice(camera.getProduct().getPrice());
+            }
+
+            productService.updateProduct(camera.getProduct().getId(), productDto);
+        }
+
+        // Zapisz zmiany w bazie danych
         cameraRepository.save(camera);
 
         return cameraMapper.cameraToCameraDTO(camera);
@@ -159,6 +181,7 @@ public CameraDTO updateCameraDetails(Long cameraId, CameraDTO updatedCameraDTO) 
         throw new CustomException("Błąd podczas przetwarzania żądania", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
+
 
 
 

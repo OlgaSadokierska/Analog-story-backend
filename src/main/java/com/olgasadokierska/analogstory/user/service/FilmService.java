@@ -203,7 +203,7 @@ public void deleteFilmAndProduct(long filmId) {
 }
 
 // update kilisza
-@Transactional
+/*@Transactional
 public FilmDTO updateFilm(Long filmId, FilmDTO updatedFilmDTO) {
     try {
         Film film = filmRepository.findById(filmId)
@@ -220,6 +220,7 @@ public FilmDTO updateFilm(Long filmId, FilmDTO updatedFilmDTO) {
         productService.updateProduct(film.getProduct().getId(), productDto);
 
 
+
         Film updatedFilm = filmRepository.save(film);
 
         return filmMapper.filmToFilmDTO(updatedFilm);
@@ -229,7 +230,57 @@ public FilmDTO updateFilm(Long filmId, FilmDTO updatedFilmDTO) {
     } catch (Exception e) {
         throw new CustomException("Błąd podczas przetwarzania żądania", HttpStatus.INTERNAL_SERVER_ERROR);
     }
-}
+}*/
+
+    @Transactional
+    public FilmDTO updateFilm(Long filmId, FilmDTO updatedFilmDTO) {
+        try {
+            Film film = filmRepository.findById(filmId)
+                    .orElseThrow(() -> new CustomException("Nie znaleziono kliszy od id: " + filmId, HttpStatus.NOT_FOUND));
+
+            film.setModel(updatedFilmDTO.getModel());
+            film.setBrand(updatedFilmDTO.getBrand());
+            film.setLoadedFrames(updatedFilmDTO.getLoadedFrames());
+            film.setMaxLoaded(updatedFilmDTO.getMaxLoaded());
+
+            Optional<ProductDto> existingProductDtoOptional = updatedFilmDTO.getProductDto();
+
+            existingProductDtoOptional.ifPresent(existingProductDto -> {
+                ProductDto productDto = new ProductDto();
+
+                // Pobierz brand i model z FilmDTO
+                productDto.setBrand(updatedFilmDTO.getBrand());
+                productDto.setModel(updatedFilmDTO.getModel());
+
+                // Ustaw opis tylko, jeśli jest podany w zaktualizowanym ProductDto
+                if (existingProductDto.getDescription() != null) {
+                    productDto.setDescription(existingProductDto.getDescription());
+                } else {
+                    productDto.setDescription(film.getProduct().getDescription());
+                }
+
+                // Ustaw cenę tylko, jeśli jest podana w zaktualizowanym ProductDto
+                if (existingProductDto.getPrice() != 0.0) {
+                    productDto.setPrice(existingProductDto.getPrice());
+                } else {
+                    productDto.setPrice(film.getProduct().getPrice());
+                }
+
+                productService.updateProduct(film.getProduct().getId(), productDto);
+            });
+
+            Film updatedFilm = filmRepository.save(film);
+
+            return filmMapper.filmToFilmDTO(updatedFilm);
+
+        } catch (CustomException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new CustomException("Błąd podczas przetwarzania żądania", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 
 
 
