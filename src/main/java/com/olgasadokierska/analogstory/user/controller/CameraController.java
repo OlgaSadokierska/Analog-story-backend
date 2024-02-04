@@ -53,7 +53,7 @@ public class CameraController {
 
 
 
-    //dodawanie aparatu
+
     @PostMapping("/add/{userId}")
     public ResponseEntity<CameraDTO> addCamera(@PathVariable Long userId, @RequestBody CameraDTO cameraDTO) {
         try {
@@ -63,7 +63,7 @@ public class CameraController {
             throw new CustomException("Błąd podczas dodawania kamery", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    // wysatwainie na sprzedaz kamery
+
     @PutMapping("/setForSale/{cameraId}")
     public ResponseEntity<String> setCameraForSale(@PathVariable Long cameraId, @RequestBody ProductDto productDto) {
         try {
@@ -73,7 +73,7 @@ public class CameraController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
-// usuwanie aparatu
+
 
     @DeleteMapping("/deleteCamera/{cameraId}")
     public ResponseEntity<String> deleteCameraAndProduct(@PathVariable long cameraId) {
@@ -86,7 +86,7 @@ public class CameraController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
-// update aparatu
+
 @PutMapping("/updateDetails/{cameraId}")
 public ResponseEntity<CameraDTO> updateCameraDetails(@PathVariable Long cameraId, @RequestBody CameraDTO updatedCameraDTO) {
     try {

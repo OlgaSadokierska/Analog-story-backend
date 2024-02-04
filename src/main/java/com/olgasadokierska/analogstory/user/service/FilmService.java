@@ -37,7 +37,6 @@ public class FilmService {
     public List<Film> getAllFilms() {
         return filmRepository.findAll();
     }
-    //dodawanie nowej kliszy
     @Transactional
     public Film addFilm(long userId, FilmDTO filmDTO, CameraDTO cameraDTO) {
         try {
@@ -74,7 +73,6 @@ public class FilmService {
             throw new CustomException("Błąd podczas przetwarzania żądania", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    //przyspisywanie aparatu do kliszy
     @Transactional
     public FilmDTO assignCameraToFilm(long filmId, Long cameraId) {
         try {
@@ -138,7 +136,7 @@ public class FilmService {
         }
     }
 
-// usuwanie przypsianego aparatu
+
 @Transactional
 public FilmDTO removeCameraFromFilm(long filmId) {
     try {
@@ -170,7 +168,7 @@ public FilmDTO removeCameraFromFilm(long filmId) {
         throw new CustomException("Błąd podczas przetwarzania żądania", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
-// uswanie kliszy
+
 @Transactional
 public void deleteFilmAndProduct(long filmId) {
     try {
@@ -201,36 +199,6 @@ public void deleteFilmAndProduct(long filmId) {
         throw new CustomException("Błąd podczas przetwarzania żądania", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
-
-// update kilisza
-/*@Transactional
-public FilmDTO updateFilm(Long filmId, FilmDTO updatedFilmDTO) {
-    try {
-        Film film = filmRepository.findById(filmId)
-                .orElseThrow(() -> new CustomException("Nie znaleziono kliszy od id: " + filmId, HttpStatus.NOT_FOUND));
-
-        film.setModel(updatedFilmDTO.getModel());
-        film.setBrand(updatedFilmDTO.getBrand());
-        film.setLoadedFrames(updatedFilmDTO.getLoadedFrames());
-        film.setMaxLoaded(updatedFilmDTO.getMaxLoaded());
-
-        ProductDto productDto = updatedFilmDTO.getProductDto();
-        productDto.setBrand(updatedFilmDTO.getBrand());
-        productDto.setModel(updatedFilmDTO.getModel());
-        productService.updateProduct(film.getProduct().getId(), productDto);
-
-
-
-        Film updatedFilm = filmRepository.save(film);
-
-        return filmMapper.filmToFilmDTO(updatedFilm);
-
-    } catch (CustomException e) {
-        throw e;
-    } catch (Exception e) {
-        throw new CustomException("Błąd podczas przetwarzania żądania", HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-}*/
 
     @Transactional
     public FilmDTO updateFilm(Long filmId, FilmDTO updatedFilmDTO) {
@@ -280,12 +248,7 @@ public FilmDTO updateFilm(Long filmId, FilmDTO updatedFilmDTO) {
         }
     }
 
-
-
-
-
-
-
+    
 
 }
 

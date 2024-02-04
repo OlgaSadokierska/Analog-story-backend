@@ -45,7 +45,7 @@ public class CameraService {
         return cameraMapper.cameraToCameraDTO(camera);
     }
 
-    //dodawanie aparatu
+
     @Transactional
     public CameraDTO addCamera(Long userId, CameraDTO cameraDTO) {
 
@@ -54,8 +54,8 @@ public class CameraService {
                 .orElseThrow(() -> new CustomException("Użytkownik o ID " + userId + " nie istnieje", HttpStatus.NOT_FOUND));
 
         Product product = new Product();
-        product.setDescription(null);  // Ustawienie opisu na null
-        product.setPrice(0.0);  // Ustawienie ceny na null
+        product.setDescription(null);
+        product.setPrice(0.0);
         product.setUser(user);
         product.setModel(cameraDTO.getModel());
         product.setBrand(cameraDTO.getBrand());
@@ -139,15 +139,15 @@ public CameraDTO updateCameraDetails(Long cameraId, CameraDTO updatedCameraDTO) 
         Camera camera = cameraRepository.findById(cameraId)
                 .orElseThrow(() -> new CustomException("Nie znaleziono aparatu o id: " + cameraId, HttpStatus.NOT_FOUND));
 
-        // Aktualizuj pola kamery
+
         camera.setModel(updatedCameraDTO.getModel());
         camera.setBrand(updatedCameraDTO.getBrand());
 
-        // Pobierz ProductDto z CameraDTO
+
         ProductDto existingProductDto = updatedCameraDTO.getProductDto().orElse(null);
 
         if (existingProductDto != null) {
-            // Jeśli ProductDto jest dostępny, zaktualizuj produkt związany z kamerą
+
             ProductDto productDto = new ProductDto();
             productDto.setBrand(updatedCameraDTO.getBrand());
             productDto.setModel(updatedCameraDTO.getModel());

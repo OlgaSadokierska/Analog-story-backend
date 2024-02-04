@@ -49,7 +49,7 @@ public class FilmController {
         }
     }
 
-    //przspiswaynie aparatu do kliszy
+
     @PutMapping("/assignCamera/{filmId}/{cameraId}")
     public ResponseEntity<FilmDTO> assignCameraToFilm(@PathVariable long filmId, @PathVariable(required = false) Long cameraId) {
         try {
@@ -59,7 +59,7 @@ public class FilmController {
             throw new CustomException("Błąd podczas przypisywania kamery do filmu", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    // wystawianie na sprzedaż kliszy
+
     @PutMapping("/setForSale/{filmId}")
     public ResponseEntity<FilmDTO> setFilmForSale(@PathVariable long filmId, @RequestBody ProductDto productDto) {
         try {
